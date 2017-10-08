@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/app/Company.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/CompanyInternShipCourse.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/AssessController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Course/AssignController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Course/CompanyInCourseController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Course/ManageInCourseController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Course/StudentRegisterController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/FileController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/HomeUserController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/MyUserController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Profile/CompanyProfileController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Profile/LectureProfileController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Profile/StudentProfileController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/SessionController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/VoteController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/routes.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/InternShipCourse.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/InternShipGroup.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/LectureInternShipCourse.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/MyUser.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/PlanLearning.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/StudentInternShipCourse.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/StudentTmp.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/assess.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/assess/company-join.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/assess/lecture-assess.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/errors/student-register-error.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/guide.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/home-user/users-assess.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/home-user/users-guide.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/home-user/users-home.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/home-user/users-notify.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/home.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/manage-internship-course/course-detail.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/manage-internship-course/create-course.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/manage-internship-course/list-course.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/manage-internship-course/plan-learning.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/manage-register/company-register.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/manage-register/course-join.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/manage-register/student-register.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/my-user/add-user.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/my-user/edit-company.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/my-user/edit-lecture.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/my-user/edit-student.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/my-user/list-user.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/news-content.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/notify.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/profile/admin-change-pass.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/profile/company-change-pass.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/profile/company-profile.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/profile/lecture-change-pass.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/profile/lecture-profile.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/profile/student-change-pass.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/profile/student-profile.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/vote/vote-company.blade.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/resources/views/vote/vote.blade.php" charset="UTF-8" />
+  </component>
+</project>

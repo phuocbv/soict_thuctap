@@ -1,0 +1,47 @@
+#header {
+    background-color: #001731;
+    font-weight: bold;
+    text-align: center;
+    min-height: 50px;
+}
+
+#icon-header {
+    margin-left: -15px;
+    padding-top: 5px;
+    padding-bottom: 5px
+}
+
+#name-header {
+    margin-top: 35px;
+    margin-left: -15px;
+}
+
+#name-school {
+    font-size: 20px;
+    font-weight: bold;
+    float: left;
+    color: #FFFFFF;
+}
+
+#name-project {
+    float: left;
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+#footer {
+    background-color: #001731;
+    text-align: center;
+    min-height: 50px;
+    color: #FFFFFF;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.name-page-profile{
+    font-weight: bold;
+    font-size: 16px;
+    color: inherit;
+}
+
