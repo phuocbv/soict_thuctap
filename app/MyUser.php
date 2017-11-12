@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class MyUser extends Model
 {
-    public $table = "users";
+    public $table = 'users';
 
     public function student()
     {
@@ -163,7 +163,7 @@ class MyUser extends Model
         $find->save();
     }
 
-    public static function checkPass($id,$password)
+    public static function checkPass($id, $password)
     {
         $user = MyUser::where('id', '=', $id)->get();
         $check = false;

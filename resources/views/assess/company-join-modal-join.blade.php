@@ -1175,9 +1175,9 @@
                              style="font-weight: bold;text-align: center">
                             <span>XÁC NHẬN PHÍA CÔNG TY</span><br>
                             <span>
-                                @foreach($user as $u)
-                                    {{$u->name}}
-                                @endforeach
+                                @if ($user)
+                                    {{$user->name}}
+                                @endif
                             </span>
                         </div>
                     </div>

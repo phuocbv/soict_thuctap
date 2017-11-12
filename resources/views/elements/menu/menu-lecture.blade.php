@@ -3,10 +3,10 @@
         <h3 class="panel-title name-notify">Thông tin chung</h3>
     </div>
     <div class="panel-body" style="padding: 0px">
-        @foreach($user as $u)
+        @if (Auth::check())
             <ul class="nav navbar-stacked user-menu">
                 <li>
-                    <a href="user-lecture-home?user_id={{bcrypt($u->user_id)}}&type={{'lecture'}}"
+                    <a href="{{ route('home') }}"
                        id="menu-home">Thông báo</a>
                 </li>
                 <li>
@@ -14,7 +14,7 @@
                         tác</a>
                 </li>
             </ul>
-        @endforeach
+        @endif
     </div>
 </div>
 <div class="panel panel-default" style="margin-left: -15px;">
@@ -24,7 +24,7 @@
     <div class="panel-body" style="padding: 0px">
         <ul class="nav navbar-stacked user-menu">
             <li>
-                <a href="lecture-profile" id="lectureProfile">Xem thông tin cá nhân</a>
+                <a href="{{ url('lecture-profile') }}" id="lectureProfile">Xem thông tin cá nhân</a>
             </li>
             <li>
                 <a href="lecture-change-pass" id="lectureChangePass">Đổi mật khẩu</a>

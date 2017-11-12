@@ -29,11 +29,11 @@
             </a>
         </div>
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-            @foreach($user as $u1)
-                <a href="#" class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{$u1->id}}">
+            @if (isset($user))
+                <a href="#" class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{$user->id}}">
                     <span class="glyphicon glyphicon-edit"></span> Edit
                 </a>
-            @endforeach
+            @endif
         </div>
     </div>
     <div class="panel panel-default">
@@ -45,48 +45,43 @@
             </div>
             <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
                 <div class="table-responsive">
-                    @foreach($user as $u2)
+                    @if (isset($user))
                         <table class="table table-hover">
                             <tbody>
                             <tr>
                                 <td style="width: 50%">Họ và tên:</td>
-                                <td>{{$u2->name}}</td>
+                                <td>{{$user->name}}</td>
                             </tr>
                             <tr>
                                 <td>Ngày sinh:</td>
                                 <td>
-                                    @if(date('Y',strtotime($u2->birthday))!=1970&&date('Y',strtotime($u2->birthday))!=-0001)
-                                        {{date("d/m/Y",strtotime($u2->birthday))}}
+                                    @if(date('Y',strtotime($user->birthday))!=1970&&date('Y',strtotime($user->birthday))!=-0001)
+                                        {{date("d/m/Y",strtotime($user->birthday))}}
                                     @endif
                                 </td>
                             </tr>
-                            <?php
-                            $myUser = \App\MyUser::getUserFollowUserID($u2->user_id);
-                            ?>
-                            @foreach($myUser as $mu)
-                                <tr>
-                                    <td>Email:</td>
-                                    <td>{{$mu->email}}</td>
-                                </tr>
-                            @endforeach
+                            <tr>
+                                <td>Email:</td>
+                                <td>{{$user->user->email}}</td>
+                            </tr>
                             <tr>
                                 <td>Bộ môn:</td>
-                                <td>{{$u2->address}}
+                                <td>{{$user->address}}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Điện thoại:</td>
-                                <td>{{$u2->phone}}</td>
+                                <td>{{$user->phone}}</td>
                             </tr>
                             </tbody>
                         </table>
-                    @endforeach
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-    @foreach($user as $u3)
-        <div class="modal fade" id="{{$u3->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    @if (isset($user))
+        <div class="modal fade" id="{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              data-keyboard="true" data-backdrop="static">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -99,17 +94,17 @@
                     <div class="modal-body">
                         <form action="edit-lecture-profile" method="POST" role="form">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="id" value="{{encrypt($u3->id)}}">
+                            <input type="hidden" name="id" value="{{encrypt($user->id)}}">
 
                             <div class="form-group">
                                 <label for="">Số điện thoại</label>
                                 <input type="number" name="phone" id="inputPhone" class="form-control"
-                                       value="{{$u3->phone}}" min="0" max="99999999999" step="1" required="required">
+                                       value="{{$user->phone}}" min="0" max="99999999999" step="1" required="required">
                                 <br>
                                 <label for="">Ngày sinh</label>
-                                @if(date('Y',strtotime($u3->birthday))!=1970&&date('Y',strtotime($u3->birthday))!=-0001)
+                                @if(date('Y',strtotime($user->birthday))!=1970&&date('Y',strtotime($user->birthday))!=-0001)
                                     <input type="date" name="birthday" id="birthday" class="form-control"
-                                           value="{{date("Y-m-d",strtotime($u3->birthday))}}"
+                                           value="{{date("Y-m-d",strtotime($user->birthday))}}"
                                            required="required">
                                 @else
                                     <input type="date" name="birthday" id="birthday" class="form-control"
@@ -124,7 +119,7 @@
                 </div>
             </div>
         </div>
-    @endforeach
+    @endif
     <script>
         $(document).ready(function () {
             $('#errorBirthday').hide();

@@ -14,17 +14,10 @@ class ImageBannerController extends Controller
 {
     public function listImageBanner()
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
-
-        /*
-         * lay danh sach thong bao
-         */
-        $notify = News::listNotify();
         $imgBanner = ImageBanner::listImgBanner();
         return view('banner.list-img-banner')->with([
-            'notify' => $notify,
             'imgBanner' => $imgBanner,
             'user' => $admin,
             'type' => $type
@@ -33,16 +26,10 @@ class ImageBannerController extends Controller
 
     public function create()
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
 
-        /*
-         * lay danh sach thong bao
-         */
-        $notify = News::listNotify();
         return view('banner.create-img-banner')->with([
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);

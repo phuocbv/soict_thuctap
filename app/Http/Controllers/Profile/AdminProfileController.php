@@ -14,24 +14,19 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminProfileController extends Controller
 {
+    /**
+     * show form change password of admin
+     *
+     * @return $this
+     */
     public function adminChangePass()
     {
-        /*
-        * get newNotify
-        * get uniNotify
-        * get comNotify
-        */
-        $notify = News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
+        $myUserID = $this->currentUser()->id;
         $type = 'admin';
-
-        $myUserID = $adminSession->getAdminSession();
 
         return view('profile.admin-change-pass')->with([
             'myUserID' => $myUserID,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);
@@ -52,9 +47,9 @@ class AdminProfileController extends Controller
             $session = new SessionController();
             $userID = $session->getAdminSession();
             MyUser::changePassword($userID, $password);
-            return redirect()->back()->with('changePasswordSuccess', '??i m?t kh?u thành công');
+            return redirect()->back()->with('changePasswordSuccess', '??i m?t kh?u thï¿½nh cï¿½ng');
         } else {
-            return redirect()->back()->with('changePasswordError', '??i m?t không thành công');
+            return redirect()->back()->with('changePasswordError', '??i m?t khï¿½ng thï¿½nh cï¿½ng');
         }
     }
 }

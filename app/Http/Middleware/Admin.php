@@ -16,12 +16,7 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        /*   if (($request->session()->has('adminLogin')) == false) {
-               return redirect('login');
-           } else {
-               return $next($request);
-           }*/
-        if (Auth::guest() || Auth::user()->type != 'admin') {
+        if (Auth::guest() || Auth::user()->type != config('settings.role.admin')) {
             return redirect('login');
         } else {
             return $next($request);

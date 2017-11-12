@@ -9,36 +9,29 @@
         @yield('title')
     </title>
 
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/style.css') }}" type="text/css">
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.css') }}" type="text/css">--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" type="text/css">--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.min.css') }}" type="text/css">--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/style.css') }}" type="text/css">--}}
 
-    <!-- javascript and jquery external -->
-    <script src="{{ asset('bootstrap/js/jquery.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.js') }}" type="text/javascript"></script>
-
-    <script src="public/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="public/bootstrap/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+    {{--<!-- javascript and jquery external -->--}}
+    {{--<script src="{{ asset('bootstrap/js/jquery.min.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/js/bootstrap.js') }}" type="text/javascript"></script>--}}
 
     {{--table-data--}}
-    <link rel="stylesheet" href="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.css') }}" type="text/css">
-    <script src="{{ asset('bootstrap/table-data/jquery.dataTables.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.css') }}" type="text/css">--}}
+    {{--<script src="{{ asset('bootstrap/table-data/jquery.dataTables.min.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>--}}
 
     <link rel="stylesheet" href="public/bootstrap/css/bootstrap-theme.css" type="text/css">
     <link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css" type="text/css">
-    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.min.css') }}" type="text/css">--}}
     <link rel="stylesheet" href="public/bootstrap/css/style.css" type="text/css">
 
     <!-- javascript and jquery external -->
     <script src="public/bootstrap/js/jquery.min.js" type="text/javascript"></script>
     <script src="public/bootstrap/js/bootstrap.js" type="text/javascript"></script>
-
-    {{--<script src="public/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/js/jquery-1.11.2.min.js" type="text/javascript"></script>--}}
-
-    {{--table-data--}}
+    <script src="public/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="public/bootstrap/js/jquery-1.11.2.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="public/bootstrap/table-data/dataTables.bootstrap.min.css" type="text/css">
     <script src="public/bootstrap/table-data/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="public/bootstrap/table-data/dataTables.bootstrap.min.js" type="text/javascript"></script>
@@ -108,15 +101,8 @@
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="margin-left: 30px">
                     <div class="row">
-                        @if (Auth::check())
-                            {{substr($user->name,0,30)}}
-                            <a href="{{url('/')}}"
-                               style="color:#FFFFFF; float: right;font-weight: normal">[Đăng xuất]
-                            </a>
-                        @else
-                            <a href="login"
-                               style="color:#FFFFFF; float: right; padding-top: 5px; font-weight: normal">Đăng nhập</a>
-                        @endif
+                        <a href="login"
+                           style="color:#FFFFFF; float: right; padding-top: 5px; font-weight: normal">Đăng nhập</a>
                     </div>
                     <div class="row" style="font-weight: normal;float: right;color:#FFFFFF">
                         <?php

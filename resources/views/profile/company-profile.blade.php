@@ -29,66 +29,66 @@
             </a>
         </div>
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-            @foreach($user as $u1)
-                <a href="#" class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{$u1->id}}">
+            @if ($user)
+                <a href="#" class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{$user->id}}">
                     <span class="glyphicon glyphicon-edit"></span> Edit
                 </a>
-            @endforeach
+            @endif
         </div>
     </div>
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="col-xs-0 col-sm-3 col-md-3 col-lg-3">
                 <div class="thumbnail">
-                    @foreach($user as $userImg)
-                        <img src="public/{{$userImg->logo}}" class="img-responsive" alt="Image">
-                    @endforeach
+                    @if ($user)
+                        <img src="public/{{$user->logo}}" class="img-responsive" alt="Image">
+                    @endif
                 </div>
             </div>
             <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
                 <div class="table-responsive">
-                    @foreach($user as $u2)
+                    @if ($user)
                         <table class="table table-hover">
                             <tbody>
                             <tr>
                                 <td style="width: 50%">Tên công ty:</td>
-                                <td>{{$u2->name}}</td>
+                                <td>{{$user->name}}</td>
                             </tr>
                             <tr>
                                 <td>Địa chỉ:</td>
-                                <td>{{$u2->address}}</td>
+                                <td>{{$user->address}}</td>
                             </tr>
                             <tr>
                                 <td>Ngày Thành lập:</td>
                                 <td>
-                                    @if(date('Y',strtotime($u2->birthday))!=1970&&date('Y',strtotime($u2->birthday))!=-0001)
-                                        {{date("d/m/Y",strtotime($u2->birthday))}}
+                                    @if(date('Y',strtotime($user->birthday))!=1970&&date('Y',strtotime($user->birthday))!=-0001)
+                                        {{date("d/m/Y",strtotime($user->birthday))}}
                                     @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>Mail tuyển dụng:</td>
-                                <td>{{$u2->hr_mail}}</td>
+                                <td>{{$user->hr_mail}}</td>
                             </tr>
                             <tr>
                                 <td>Điện thoại tuyển dụng:</td>
-                                <td>{{$u2->hr_phone}}</td>
+                                <td>{{$user->hr_phone}}</td>
                             </tr>
                             <tr>
                                 <td>Mô tả công ty:</td>
                                 <td>
-                                    {!! nl2br(e(trim($u2->description))) !!}
+                                    {!! nl2br(e(trim($user->description))) !!}
                                 </td>
                             </tr>
                             </tbody>
                         </table>
-                    @endforeach
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-    @foreach($user as $u3)
-        <div class="modal fade" id="{{$u3->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    @if ($user)
+        <div class="modal fade" id="{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="text-align: center">
@@ -100,17 +100,17 @@
                     <div class="modal-body">
                         <form action="edit-company-profile" method="POST" role="form" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="id" value="{{encrypt($u3->id)}}">
+                            <input type="hidden" name="id" value="{{encrypt($user->id)}}">
 
                             <div class="form-group">
                                 <label for="">Địa chỉ</label>
-                                <input type="text" class="form-control" name="address" value="{{$u3->address}}"
+                                <input type="text" class="form-control" name="address" value="{{$user->address}}"
                                        required="required">
                                 <br>
                                 <label for="">Ngày thành lập</label>
-                                @if(date('Y',strtotime($u3->birthday))!=1970&&date('Y',strtotime($u3->birthday))!=-0001)
+                                @if(date('Y',strtotime($user->birthday))!=1970&&date('Y',strtotime($user->birthday))!=-0001)
                                     <input type="date" name="birthday" id="birthday" class="form-control"
-                                           value="{{date("Y-m-d",strtotime($u3->birthday))}}"
+                                           value="{{date("Y-m-d",strtotime($user->birthday))}}"
                                            required="required">
                                 @else
                                     <input type="date" name="birthday" id="birthday" class="form-control"
@@ -120,19 +120,19 @@
                                     lập)</label>
                                 <br>
                                 <label for="">Mail tuyển dụng</label>
-                                <input type="email" class="form-control" name="email" value="{{$u3->hr_mail}}"
+                                <input type="email" class="form-control" name="email" value="{{$user->hr_mail}}"
                                        required="required">
                                 <br>
                                 <label for="">Số điện thoại</label>
                                 <input type="text" name="phone" class="form-control"
-                                       value="{{$u3->hr_phone}}" required="required">
+                                       value="{{$user->hr_phone}}" required="required">
                                 <br>
                                 <label for="">Logo</label>
                                 <input type="file" name="logo" id="logoFile" style="width: 100%" accept="image/*">
                                 <label>Mô tả ngắn gọn</label>
                                 <textarea name="description" id="description" class="form-control"
                                           style="width: 100%;overflow: hidden;min-height: 150px"
-                                          onkeyup="textArea(this)">{{trim($u3->description)}}
+                                          onkeyup="textArea(this)">{{trim($user->description)}}
                                 </textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Chỉnh sửa</button>
@@ -141,7 +141,7 @@
                 </div>
             </div>
         </div>
-    @endforeach
+    @endif
     <script>
         function textArea(o) {
             o.style.height = "1px";

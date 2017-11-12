@@ -88,59 +88,34 @@ class MyUserController extends Controller
      */
     public function addUsers()
     {
-        /*
-       * get newNotify
-       * get uniNotify
-       * get comNotify
-       */
-        $notify = News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
+
         return view('my-user.add-user')->with([
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);
     }
 
     /**
-     * return page listUser view
+     * return page listUser view of admin
      *
      * @return $this
      */
     public function listUser()
     {
-        /*
-      * get newNotify
-      * get uniNotify
-      * get comNotify
-      */
-        $notify = News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
-        /*
-         * get all student
-         */
-        $students = Student::all();
-        $students2 = Student::all();
-        /*
-         * get all lecture
-         */
-        $lectures = Lecture::all();
-        /*
-         * get all company
-         */
-        $company = Company::all();
+        $students = Student::all();//danh sách tất cả student
+        //$students2 = Student::all();//danh sách tất cả student
+        $lectures = Lecture::all();//danh sách tất cả lecture
+        $company = Company::all();//danh sách tất cả company
+
         return view('my-user.list-user')->with([
-            'student2' => $students2,
+            'student2' => $students,
             'student' => $students,
             'lecture' => $lectures,
             'company' => $company,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);
@@ -367,22 +342,16 @@ class MyUserController extends Controller
         }
     }
 
+    /**
+     * show form edit student of admin
+     *
+     * @param Request $request
+     * @return $this
+     */
     public function editStudent(Request $request)
     {
-        /*
-       * get newNotify
-       * get uniNotify
-       * get comNotify
-       */
-        $notify = News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
-
-        /*
-         * lay nguoi dung la sinh vien
-         */
         $studentID = decrypt($request->id);
         $student = Student::getStudentFollowID($studentID);
         $userID = $student->first()->user_id;
@@ -391,7 +360,6 @@ class MyUserController extends Controller
         return view('my-user.edit-student')->with([
             'studentID' => $studentID,
             'myUser' => $myUser,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);
@@ -399,20 +367,8 @@ class MyUserController extends Controller
 
     public function editLecture(Request $request)
     {
-        /*
-       * get newNotify
-       * get uniNotify
-       * get comNotify
-       */
-        $notify = News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
-
-        /*
-         * lay nguoi dung la giang vien
-         */
         $lectureID = decrypt($request->id);
         $lecture = Lecture::getLectureFollowID($lectureID);
         $userID = $lecture->first()->user_id;
@@ -421,7 +377,6 @@ class MyUserController extends Controller
         return view('my-user.edit-lecture')->with([
             'lectureID' => $lectureID,
             'myUser' => $myUser,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);
@@ -429,20 +384,8 @@ class MyUserController extends Controller
 
     public function editCompany(Request $request)
     {
-        /*
-       * get newNotify
-       * get uniNotify
-       * get comNotify
-       */
-        $notify = News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
-
-        /*
-         * lay nguoi dung la giang vien
-         */
         $companyID = decrypt($request->id);
         $company = Company::getCompanyFollowID($companyID);
         $userID = $company->first()->user_id;
@@ -451,7 +394,6 @@ class MyUserController extends Controller
         return view('my-user.edit-company')->with([
             'companyID' => $companyID,
             'myUser' => $myUser,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);

@@ -32,17 +32,9 @@ class StudentRegisterController extends Controller
      */
     public function registerInternship()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $studentSession = new SessionController();
-        $student = Student::getStudent($studentSession->getStudentSession());
+        $student = $this->currentUser()->student;
         $type = 'student';
-        $studentID = $student->first()->id;
+        $studentID = $student->id;
 
         $nowDate = date('Y-m-d');
         $nowMonth = (int)date('m', strtotime($nowDate));
@@ -113,7 +105,6 @@ class StudentRegisterController extends Controller
             }
             if (!$this->checkStudentResgister) {
                 return view('errors.student-register-error')->with([
-                    'notify' => $notify,
                     'user' => $student,
                     'type' => $type
                 ]);
@@ -121,14 +112,12 @@ class StudentRegisterController extends Controller
                 return view('manage-register.student-register')->with([
                     'registerCompany' => $registerCompany,
                     'internShipCourse' => $internShipCourse,
-                    'notify' => $notify,
                     'user' => $student,
                     'type' => $type
                 ]);
             }
         } else {
             return view('errors.student-register-error')->with([
-                'notify' => $notify,
                 'user' => $student,
                 'type' => $type
             ]);
@@ -163,9 +152,8 @@ class StudentRegisterController extends Controller
         /*
          * get studentID
          */
-        $studentSession = new SessionController();
-        $student = Student::getStudent($studentSession->getStudentSession());
-        $studentID = $student->first()->id;
+        $student = $this->currentUser()->student;
+        $studentID = $student->id;
 
         /*
          * lay gioi han dang ky vao mot cong ty
@@ -221,14 +209,11 @@ class StudentRegisterController extends Controller
         }
     }
 
-    public static function courseJoin()
+    public function courseJoin()
     {
-        $notify = News::getNotify();
-
-        $studentSession = new SessionController();
-        $student = Student::getStudent($studentSession->getStudentSession());
+        $student = $this->currentUser()->student;
         $type = 'student';
-        $studentID = $student->first()->id;
+        $studentID = $student->id;
 
         /*
          * lay khoa thuc tap ma sinh vien tham gia
@@ -274,7 +259,7 @@ class StudentRegisterController extends Controller
             'courseCurrent' => $courseCurrent,
             'inCourseJoin' => $InCourseJoin,
             'studentID' => $studentID,
-            'notify' => $notify,
+            //'notify' => $notify,
             'user' => $student,
             'type' => $type
         ]);

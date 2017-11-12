@@ -13,20 +13,15 @@ class MyFunctionController extends Controller
 {
     public function listFunction()
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
-
-        //lay cac thong bao
-        $notify = News::listNotify();
-
         //lay cac he dao tao
         $learningPrograming = MyFunction::learningPrograming();
         $academy = MyFunction::academy();
+
         return view('function.list-function')->with([
             'learningPrograming' => $learningPrograming,
             'academy' => $academy,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);
@@ -40,12 +35,8 @@ class MyFunctionController extends Controller
      */
     public function addAcademy(Request $request)
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
-        $adminID = "";
-        foreach ($admin as $a) {
-            $adminID = $a->id;
-        }
+        $admin = $this->currentUser()->admin;
+        $adminID = $admin->id;
         MyFunction::insert($request->input('academy'), 2, $adminID);
         return redirect()->back()->with('addAcademy', 'Đã thêm một bộ môn mới');
     }
@@ -58,12 +49,8 @@ class MyFunctionController extends Controller
      */
     public function addLearningPrograming(Request $request)
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
-        $adminID = "";
-        foreach ($admin as $a) {
-            $adminID = $a->id;
-        }
+        $admin = $this->currentUser()->admin;
+        $adminID = $admin->id;
         MyFunction::insert($request->input('learningPrograming'), 1, $adminID);
         return redirect()->back()->with('addLearningPrograming', 'Đã thêm một hệ đào tạo mới');
     }

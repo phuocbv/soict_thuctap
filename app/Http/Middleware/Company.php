@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class Company
 {
@@ -15,7 +16,7 @@ class Company
      */
     public function handle($request, Closure $next)
     {
-        if (($request->session()->has('companyLogin')) == false) {
+        if (Auth::guest() || Auth::user()->type != config('settings.role.company')) {
             return redirect('login');
         } else {
             return $next($request);

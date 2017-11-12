@@ -25,62 +25,39 @@
         <div class="panel-heading">
             <span class="name-page-profile">Thông tin chung</span>
             <span class="glyphicon glyphicon-menu-right small"></span>
-            @if($type=='student')
-                @foreach($user as $u)
-                    <a href="user-student-home?user_id={{bcrypt($u->user_id)}}&type={{'student'}}">
-                        <span class="name-page-profile" style="color: #333333">Thông báo</span>
-                    </a>
-                @endforeach
-            @elseif($type=='lecture')
-                @foreach($user as $u)
-                    <a href="user-lecture-home?user_id={{bcrypt($u->user_id)}}&type={{'lecture'}}">
-                        <span class="name-page-profile" style="color: #333333">Thông báo</span>
-                    </a>
-                @endforeach
-            @elseif($type=='company')
-                @foreach($user as $u)
-                    <a href="user-company-home?user_id={{bcrypt($u->user_id)}}&type={{'company'}}">
-                        <span class="name-page-profile" style="color: #333333">Thông báo</span>
-                    </a>
-                @endforeach
-            @elseif($type=='admin')
-                {{--@if (Auth::check())--}}
-                {{--{{ dd(Auth::user()->id) }}--}}
-                {{--<a href="user-admin-home?user_id={{bcrypt(Auth::user()->id)}}&type={{'admin'}}">--}}
-                {{--<span class="name-page-profile" style="color: #333333">Thông báo</span>--}}
-                {{--</a>--}}
-                {{--@endif--}}
-            @endif
+            <a href="{{ route('home') }}">
+                <span class="name-page-profile" style="color: #333333">Thông báo</span>
+            </a>
         </div>
         <div class="panel-body body-padding">
             @foreach($notify as $n)
                 @if($type=='student')
-                    @foreach($user as $u)
+                    @if (Auth::check())
                         <span>
-                            <a href="student-detail-notify?notify_id={{$n->id}}&user_id={{bcrypt($u->user_id)}}&type={{'student'}}"
+                            <a href="student-detail-notify?notify_id={{$n->id}}&user_id={{bcrypt($user->user_id)}}&type={{'student'}}"
                                style="color:#333333;font-weight: bold">
                                 {{$n->title}}
                             </a>
                         </span>
-                    @endforeach
+                    @endif
                 @elseif($type=='lecture')
-                    @foreach($user as $u)
+                    @if (Auth::check())
                         <span>
-                            <a href="lecture-detail-notify?notify_id={{$n->id}}&user_id={{bcrypt($u->user_id)}}&type={{'lecture'}}"
+                            <a href="lecture-detail-notify?notify_id={{$n->id}}&user_id={{bcrypt($user->user_id)}}&type={{'lecture'}}"
                                style="color:#333333;font-weight: bold">
                                 {{$n->title}}
                             </a>
                         </span>
-                    @endforeach
+                    @endif
                 @elseif($type=='company')
-                    @foreach($user as $u)
+                    @if (Auth::check())
                         <span>
-                            <a href="company-detail-notify?notify_id={{$n->id}}&user_id={{bcrypt($u->user_id)}}&type={{'company'}}"
+                            <a href="company-detail-notify?notify_id={{$n->id}}&user_id={{bcrypt($user->user_id)}}&type={{'company'}}"
                                style="color:#333333;font-weight: bold">
                                 {{$n->title}}
                             </a>
                         </span>
-                    @endforeach
+                    @endif
                 @elseif($type=='admin')
                     @if (Auth::check())
                         <span>
@@ -90,6 +67,13 @@
                             </a>
                         </span>
                     @endif
+                @else
+                    <span>
+                        <a href="detail-notify?notifyId={{ $n->id }}}"
+                                style="color:#333333;font-weight: bold">
+                            {{ $n->title }}
+                        </a>
+                    </span>
                 @endif
                 <p class="date">
                     {{date("d/m/Y",strtotime($n->updated_at))}}

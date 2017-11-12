@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'user_name', 'provider', 'provider_id'
     ];
 
     /**
@@ -42,5 +42,16 @@ class User extends Authenticatable
     public function company()
     {
         return $this->hasOne(Company::class,'user_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
+
+    public function scopeFindUser($query, $data)
+    {
+        return $query->where('email', $data)
+            ->orWhere('provider_id', $data);
     }
 }
