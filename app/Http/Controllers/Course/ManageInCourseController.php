@@ -54,10 +54,7 @@ class ManageInCourseController extends Controller
         * get comNotify
         */
         $notify = News::getNotify();
-
-//        $adminSession = new  SessionController();
-//        $admin = Admin::getAdmin($adminSession->getAdminSession());
-        $admin = Auth::user()->admin;
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
 
         /*
@@ -78,28 +75,22 @@ class ManageInCourseController extends Controller
         ]);
     }
 
+    /**
+     * show form plan learning of admin
+     *
+     * @return $this
+     *
+     */
     public function planLearning()
     {
-        /*
-       * get newNotify
-       * get uniNotify
-       * get comNotify
-       */
-        $notify = News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
+        $currentYear = (int)date('Y');//lấy năm hiện tại của hệ thống
+        $planLearning = PlanLearning::allPlanLearning();//lấy tất cả các plan learning
 
-        /*
-         * get current year
-         */
-        $currentYear = (int)date('Y');
-        $planLearning = PlanLearning::allPlanLearning();
         return view('manage-internship-course.plan-learning')->with([
             'planLearning' => $planLearning,
             'currentYear' => $currentYear,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type,
         ]);
@@ -113,8 +104,8 @@ class ManageInCourseController extends Controller
      */
     public function addPlanLearning(Request $request)
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        //$adminSession = new  SessionController();
+        $admin = $this->currentUser()->admin;
         $adminID = 0;
         foreach ($admin as $am) {
             $adminID = $am->id;
@@ -189,10 +180,10 @@ class ManageInCourseController extends Controller
         * get uniNotify
         * get comNotify
         */
-        $notify = News::getNotify();
+        //$notify = News::getNotify();
 
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        //$adminSession = new  SessionController();
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
 
 
@@ -217,7 +208,7 @@ class ManageInCourseController extends Controller
                 'lecture' => $allLecture,
                 'company' => $allCompany,
                 'year' => $year,
-                'notify' => $notify,
+                //'notify' => $notify,
                 'user' => $admin,
                 'type' => $type,
             ]);

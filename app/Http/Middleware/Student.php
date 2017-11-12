@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class Student
 {
@@ -15,7 +16,7 @@ class Student
      */
     public function handle($request, Closure $next)
     {
-        if (($request->session()->has('studentLogin')) == false) {
+        if (Auth::guest() || Auth::user()->type != config('settings.role.student')) {
             return redirect('login');
         } else {
             return $next($request);

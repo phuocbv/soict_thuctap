@@ -23,6 +23,11 @@ class Lecture extends Model
         return $this->hasMany('App\LectureInternShipCourse', 'lecture_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     /**
      * get lecture
      *

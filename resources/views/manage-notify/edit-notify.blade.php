@@ -25,9 +25,9 @@
         <div class="panel-body">
             <form action="edit-notify-form" method="POST" role="form">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                @foreach($user as $u)
-                    <input type="hidden" name="adminID" value="{{encrypt($u->id)}}">
-                @endforeach
+                @if ($user)
+                    <input type="hidden" name="adminID" value="{{encrypt($user->id)}}">
+                @endif
                 @foreach($notify as $n)
                     <div class="form-group">
                         <input type="hidden" name="notifyID" value="{{encrypt($n->id)}}">

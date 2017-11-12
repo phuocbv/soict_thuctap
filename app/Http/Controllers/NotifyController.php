@@ -18,14 +18,10 @@ class NotifyController extends Controller
      */
     public function listNotify()
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
+        $notify = News::listNotify();//list all notify
 
-        /*
-         * lay danh sach thong bao
-         */
-        $notify = News::listNotify();
         return view('manage-notify.list-notify')->with([
             'notify' => $notify,
             'user' => $admin,
@@ -40,13 +36,9 @@ class NotifyController extends Controller
      */
     public function createNotify()
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
 
-        /*
-         * lay danh sach thong bao
-         */
         return view('manage-notify.create-notify')->with([
             'user' => $admin,
             'type' => $type
@@ -105,13 +97,10 @@ class NotifyController extends Controller
      */
     public function editNotify(Request $request)
     {
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
         $notifyID = decrypt($request->input('id'));
-        /*
-         * lay danh sach thong bao
-         */
+
         if (News::checkNotify($notifyID)) {
             $notify = News::getNotifyFID($notifyID);
             return view('manage-notify.edit-notify')->with([

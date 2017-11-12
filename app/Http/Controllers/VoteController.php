@@ -32,19 +32,10 @@ class VoteController extends Controller
 
     public function statisticVote(Request $request)
     {
-        /*
-        * get newNotify
-        * get uniNotify
-        * get comNotify
-        */
-       $notify=News::getNotify();
-
-        $adminSession = new  SessionController();
-        $admin = Admin::getAdmin($adminSession->getAdminSession());
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
 
         return view('vote.vote')->with([
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type
         ]);
@@ -75,19 +66,10 @@ class VoteController extends Controller
 
     public function companyCooperation()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify=News::getNotify();
-
-        $studentSession = new SessionController();
-        $student = Student::getStudent($studentSession->getStudentSession());
+        $student = $this->currentUser()->student;
         $type = 'student';
 
         return view('vote.vote-company')->with([
-            'notify' => $notify,
             'user' => $student,
             'type' => $type
         ]);

@@ -6,7 +6,7 @@
         @if (Auth::check())
             <ul class="nav navbar-stacked user-menu">
                 <li>
-                    <a href="user-admin-home?user_id={{bcrypt(Auth::user()->id)}}&type={{'admin'}}"
+                    <a href="{{ route('home') }}"
                        id="menu-home">Thông báo</a>
                 </li>
             </ul>

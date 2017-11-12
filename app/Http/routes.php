@@ -98,15 +98,10 @@ Route::group(['middleware' => 'Lecture'], function () {
         return Response::json(\App\Http\Controllers\AssessController::lectureToScore($courseID, $studentID, $lecturePoint));
     });
     Route::get('company-information-lecture', 'HomeUserController@companyInformationLecture');
-    Route::post('lecture-check-pass', function () {
-        $session = new SessionController();
-        $userID = $session->getLectureSession();
-        if (\App\MyUser::checkPass($userID, $_POST['oldPassword'])) {
-            return "true";
-        } else {
-            return "false";
-        }
-    });
+    Route::post('lecture-check-pass', [
+        'as' => 'lecture.profile.checkOldPass',
+        'uses' => 'Profile\LectureProfileController@checkOldPass'
+    ]);
 });
 /*
  * route company
@@ -344,14 +339,22 @@ Route::get('report-demo', function () {
 
 Route::get('auth/{provider}', [
     'as' => 'provider.redirect',
-    'uses' => 'Auth\AuthController@redirectToProvider'
+    'uses' => 'Auth\LoginController@redirectToProvider'
 ]);
 
 Route::get('auth/{provider}/callback', [
     'as' => 'provider.handle',
-    'uses' => 'Auth\AuthController@handleProviderCallback'
+    'uses' => 'Auth\LoginController@handleProviderCallback'
 ]);
 
 Route::auth();
 
-//Route::get('/home', 'HomeController@index');
+Route::get('/home', [
+    'as' => 'home',
+    'uses' => 'HomeController@home'
+]);
+
+Route::post('validateStudent', [
+    'as' => 'validateStudent',
+    'uses' => 'Auth\LoginController@validateStudent'
+]);

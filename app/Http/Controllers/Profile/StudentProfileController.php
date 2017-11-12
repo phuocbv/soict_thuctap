@@ -20,21 +20,17 @@ class StudentProfileController extends Controller
         $this->checkMSVEmail = false;
     }
 
+    /**
+     * show form profile of student
+     *
+     * @return $this
+     */
     public function studentProfile()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $studentSession = new SessionController();
-        $student = Student::getStudent($studentSession->getStudentSession());
+        $student = $this->currentUser()->student;
         $type = 'student';
 
         return view('profile.student-profile')->with([
-            'notify' => $notify,
             'user' => $student,
             'type' => $type
         ]);
@@ -68,23 +64,18 @@ class StudentProfileController extends Controller
         }
     }
 
+    /**
+     * show form change password of student
+     *
+     * @return $this
+     */
     public function studentChangePass()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $studentSession = new SessionController();
-        $student = Student::getStudent($studentSession->getStudentSession());
+        $student = $this->currentUser()->student;
         $type = 'student';
-        $myUserID = $studentSession->getStudentSession();
+        //$myUserID = $studentSession->getStudentSession();
 
         return view('profile.student-change-pass')->with([
-            'myUserID' => $myUserID,
-            'notify' => $notify,
             'user' => $student,
             'type' => $type
         ]);

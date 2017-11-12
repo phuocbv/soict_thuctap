@@ -10,31 +10,26 @@ use App\News;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class LectureProfileController extends Controller
 {
+    private $currentUser;
+
     public function __construct()
     {
         $this->checkAVlecture = false;
         $this->checkUEmail = false;
+        $this->currentUser = $this->currentUser();
     }
 
     public function lectureProfile()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $lectureSession = new  SessionController();
-        $lecture = Lecture::getLecture($lectureSession->getLectureSession());
+        $lecture = $this->currentUser->lecture;
         $type = 'lecture';
 
         return view('profile.lecture-profile')->with([
-            'notify' => $notify,
             'user' => $lecture,
             'type' => $type
         ]);
@@ -49,10 +44,10 @@ class LectureProfileController extends Controller
     public function editProfile(Request $request)
     {
         $input = $request->all();
-        $rules = array(
+        $rules = [
             'phone' => 'required|regex:/(0)[0-9]/|min:10|max:11',
             'birthday' => 'required',
-        );
+        ];
         $validator = Validator::make($input, $rules);
         if (!$validator->fails()) {
             $yearCurrent = (int)date('Y');
@@ -71,24 +66,24 @@ class LectureProfileController extends Controller
 
     public function lectureChangePass()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $lectureSession = new  SessionController();
-        $lecture = Lecture::getLecture($lectureSession->getLectureSession());
+        $lecture = $this->currentUser->lecture;
         $type = 'lecture';
-        $myUserID = $lectureSession->getLectureSession();
 
         return view('profile.lecture-change-pass')->with([
-            'myUserID' => $myUserID,
-            'notify' => $notify,
             'user' => $lecture,
             'type' => $type
         ]);
+    }
+
+    public function checkOldPass(Request $request)
+    {
+        $oldPassword = $request->only('oldPassword');
+
+        if (MyUser::checkPass($this->currentUser->id, $oldPassword['oldPassword'])) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     public function changePass(Request $request)
@@ -103,9 +98,7 @@ class LectureProfileController extends Controller
         );
         $validator = Validator::make($input, $rules);
         if (!$validator->fails()) {
-            $session = new SessionController();
-            $userID = $session->getLectureSession();
-            MyUser::changePassword($userID, $password);
+            MyUser::changePassword($this->currentUser->id, $password);
             return redirect()->back()->with('changePasswordSuccess', 'Đổi mật khẩu thành công');
         } else {
             return redirect()->back()->with('changePasswordError', 'Đổi mật không thành công');

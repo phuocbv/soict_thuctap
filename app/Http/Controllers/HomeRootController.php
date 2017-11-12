@@ -7,6 +7,7 @@ use App\News;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class HomeRootController extends Controller
 {
@@ -22,15 +23,19 @@ class HomeRootController extends Controller
     }
 
     /**
-     * return page home
+     * return page home not login
      *
      * @return $this
      */
     public function home()
     {
-        $this->forgetSession();
+        if (Auth::check()) {
+            return redirect()->route('home');
+        }
+
         $company = Company::all();
         $notify = News::getNotify();
+
         return view('home')->with([
             'notify' => $notify,
             'company' => $company

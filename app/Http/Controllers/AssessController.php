@@ -21,19 +21,11 @@ class AssessController extends Controller
 {
     public function lectureJoin()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $lectureSession = new  SessionController();
-        $lecture = Lecture::getLecture($lectureSession->getLectureSession());
+        $lecture = $this->currentUser()->lecture;
         $type = 'lecture';
 
         /*lay id giang vien*/
-        $lectureID = $lecture->first()->id;
+        $lectureID = $lecture->id;
 
         /*lay cac khoa ma giang vien tham gia*/
         $lectureInCourse = LectureInternShipCourse::getLectureInCourseFLID($lectureID);
@@ -68,7 +60,6 @@ class AssessController extends Controller
             'courseCurrent' => $courseCurrent,
             'courseJoin' => $courseJoin,
             'lectureID' => $lectureID,
-            'notify' => $notify,
             'user' => $lecture,
             'type' => $type
         ]);
@@ -117,12 +108,9 @@ class AssessController extends Controller
 
     public function companyJoin()
     {
-        $notify = News::getNotify();
-
-        $companySession = new  SessionController();
-        $company = Company::getCompany($companySession->getCompanySession());
+        $company = $this->currentUser()->company;
         $type = 'company';
-        $companyID = $company->first()->id;
+        $companyID = $company->id;
 
 
         /*lay cac khoa ma cong ty da tham gia*/
@@ -159,7 +147,6 @@ class AssessController extends Controller
             'courseJoin' => $courseJoin,
             'courseCurrent' => $courseCurrent,
             'companyID' => $companyID,
-            'notify' => $notify,
             'user' => $company,
             'type' => $type
         ]);
@@ -294,7 +281,7 @@ class AssessController extends Controller
          */
         $notify = News::getNotify();
 
-        $companySession = new  SessionController();
+        $companySession = new SessionController();
         $company = Company::getCompany($companySession->getCompanySession());
         $type = 'company';
 

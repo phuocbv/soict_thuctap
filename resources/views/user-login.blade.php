@@ -85,14 +85,15 @@
                                placeholder="Nhập tên đăng nhập">
                         <input type="password" name="password" id="inputPassword" class="form-control input"
                                required="required" placeholder="Nhập mật khẩu">
-                        @if(isset($error))
-                            <label style="color:#c0392b">{{$error}}</label>
-                        @endif
+                        @include('elements.shared.error')
                     </div>
                     <button type="submit" class="btn btn-primary form-control" style="background: #001731; border-color: #001731">Đăng nhập</button>
                 </form>
                 <div style="margin-top: 20px">
-                    <a class="btn btn-primary col-md-12" href="{{ route('provider.redirect', ['provider' => 'facebook']) }}">Đăng nhập bằng Facebook</a>
+                    <a class="btn btn-primary col-md-12"
+                            href="{{ route('provider.redirect', ['provider' => config('settings.provider.facebook')]) }}">
+                        Đăng nhập bằng Facebook
+                    </a>
                 </div>
                 <a class="btn btn-link" href="{{ url('/password/reset') }}">Quên mật khẩu?</a></br>
                 <a class="btn btn-link" href="{{ url('/') }}">Trở lại trang chủ?</a>

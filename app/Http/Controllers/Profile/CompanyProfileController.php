@@ -27,19 +27,10 @@ class CompanyProfileController extends Controller
      */
     public function companyProfile()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $companySession = new  SessionController();
-        $company = Company::getCompany($companySession->getCompanySession());
+        $company = $this->currentUser()->company;
         $type = 'company';
 
         return view('profile.company-profile')->with([
-            'notify' => $notify,
             'user' => $company,
             'type' => $type
         ]);
@@ -108,22 +99,12 @@ class CompanyProfileController extends Controller
 
     public function companyChangePass()
     {
-        /*
-        * get newNotify
-        * get uniNotify
-        * get comNotify
-        */
-        $notify = News::getNotify();
-
-        $companySession = new  SessionController();
-        $company = Company::getCompany($companySession->getCompanySession());
+        $company = $this->currentUser()->company;
         $type = 'company';
-
-        $myUserID = $companySession->getCompanySession();
+        $myUserID = $this->currentUser()->id;
 
         return view('profile.company-change-pass')->with([
             'myUserID' => $myUserID,
-            'notify' => $notify,
             'user' => $company,
             'type' => $type
         ]);

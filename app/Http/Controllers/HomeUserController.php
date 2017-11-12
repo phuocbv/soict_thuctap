@@ -42,18 +42,18 @@ class HomeUserController extends Controller
         ]);
     }
 
+    /**
+     * lấy danh sách thông tin của công ty
+     *
+     * @return $this
+     */
     public function companyInformationStudent()
     {
-        $notify = News::getNotify();
-
-        $studentSession = new SessionController();
-        $student = Student::getStudent($studentSession->getStudentSession());
+        $student = $this->currentUser()->student;
         $type = 'student';
+        $company = Company::all();//get all
 
-        //allCompany
-        $company = Company::all();
         return view('home-user.company-cooperation-student')->with([
-            'notify' => $notify,
             'user' => $student,
             'company' => $company,
             'type' => $type
@@ -87,15 +87,14 @@ class HomeUserController extends Controller
     public function companyInformationLecture()
     {
         $notify = News::getNotify();
-        $lectureSession = new  SessionController();
-        $lecture = Lecture::getLecture($lectureSession->getLectureSession());
+        $user = $this->currentUser()->lecture;
         $type = 'lecture';
 
         $company = Company::all();
 
         return view('home-user.company-cooperation-lecture')->with([
             'notify' => $notify,
-            'user' => $lecture,
+            'user' => $user,
             'company' => $company,
             'type' => $type
         ]);
@@ -128,15 +127,11 @@ class HomeUserController extends Controller
 
     public function companyInformationCompany()
     {
-        $notify = News::getNotify();
-
-        $companySession = new  SessionController();
-        $company = Company::getCompany($companySession->getCompanySession());
+        $company = $this->currentUser()->company;
         $type = 'company';
-
         $allCompany = Company::all();
+
         return view('home-user.company-cooperation-company')->with([
-            'notify' => $notify,
             'user' => $company,
             'company' => $allCompany,
             'type' => $type
@@ -150,15 +145,8 @@ class HomeUserController extends Controller
      */
     public function adminHome()
     {
-        /*
-        * get newNotify
-        * get uniNotify
-        * get comNotify
-        */
         $notify = News::getNotify();
-//        $adminSession = new  SessionController();
-//        $admin = Admin::getAdmin($adminSession->getAdminSession());
-        $admin = Auth::user()->admin;
+        $admin = $this->currentUser()->admin;
         $type = 'admin';
 
         return view('home-user.users-home')->with([
@@ -321,5 +309,11 @@ class HomeUserController extends Controller
                 return redirect()->back();
             }
         }
+    }
+
+    public function detailNotify(Request $request)
+    {
+        $notifyId = $request->only('notifyId');
+
     }
 }

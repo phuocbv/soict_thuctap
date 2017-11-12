@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class Lecture
 {
@@ -15,7 +16,7 @@ class Lecture
      */
     public function handle($request, Closure $next)
     {
-        if (($request->session()->has('lectureLogin')) == false) {
+        if (Auth::guest() || Auth::user()->type != config('settings.role.lecture')) {
             return redirect('login');
         } else {
             return $next($request);

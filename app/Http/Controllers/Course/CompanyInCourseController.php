@@ -19,25 +19,17 @@ class CompanyInCourseController extends Controller
 {
     public function companyRegister()
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $companySession = new  SessionController();
-        $company = Company::getCompany($companySession->getCompanySession());
+        $company = $this->currentUser();
         $type = 'company';
-        $companyID = $company->first()->id;
+        $companyID = $company->id;
 
         /*
          * lay danh sach khoa thuc tap trong nam hien tai
          */
-        $arrCourse = array();
+        //$arrCourse = array();
         $nowDate = date('Y-m-d');
         $nowMonth = (int)date('m', strtotime($nowDate));
-        $year = 0;
+        //$year = 0;
         if ($nowMonth >= 7 && $nowMonth <= 12) {
             $year = (int)date('Y', strtotime($nowDate));
         } else {
@@ -47,7 +39,6 @@ class CompanyInCourseController extends Controller
         return view('manage-register.company-register')->with([
             'companyID' => $companyID,
             'inCourse' => $inCourse,
-            'notify' => $notify,
             'user' => $company,
             'type' => $type
         ]);

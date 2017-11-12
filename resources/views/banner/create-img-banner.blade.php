@@ -44,9 +44,9 @@
         <div class="panel-body">
             <form action="create-img-banner-form" method="POST" role="form" enctype="multipart/form-data">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                @foreach($user as $u)
-                    <input type="hidden" name="adminID" value="{{encrypt($u->id)}}">
-                @endforeach
+                @if ($user)
+                    <input type="hidden" name="adminID" value="{{encrypt($user->id)}}">
+                @endif
                 <div class="form-group">
                     <label>Tên hiển thị</label>
                     <input type="text" name="nameDisplay" id="" required="required" class="form-control">

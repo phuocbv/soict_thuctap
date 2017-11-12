@@ -10,71 +10,60 @@
         @yield('title')
     </title>
 
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('') }}bootstrap/css/bootstrap-theme.min.css" type="text/css">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/style.css') }}" type="text/css">
-
-    {{--display font. support display vote--}}
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-
-
-    <!-- javascript and jquery external -->
-    <script src="{{ asset('bootstrap/js/jquery.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/validate/jquery-2.0.0.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/validate/jquery.validate.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/js/script.js') }}" type="text/javascript"></script>
-
-    {{--datepicker--}}
-    <link rel="stylesheet" href="{{ asset('bootstrap/datetime/datepicker.min.css') }}" type="text/css">
-    <script src="{{ asset('bootstrap/datetime/moment.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/datetime/en-gb.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/datetime/bootstrap.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/datetime/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
-
-    {{--table-data--}}
-    <link rel="stylesheet" href="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.css') }}" type="text/css">
-    <script src="{{ asset('bootstrap/table-data/jquery.dataTables.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>
-
-    {{--chart--}}
-    <script src="{{ asset('bootstrap/chart/Chart.min.js') }}" type="text/javascript"></script>
-
-
-    {{--<link rel="stylesheet" href="public/bootstrap/css/bootstrap-theme.css" type="text/css">--}}
-    {{--<link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css" type="text/css">--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.css') }}" type="text/css">--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" type="text/css">--}}
     {{--<link rel="stylesheet" href="{{ asset('') }}bootstrap/css/bootstrap-theme.min.css" type="text/css">--}}
-    {{--<link rel="stylesheet" href="public/bootstrap/css/style.css" type="text/css">--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/style.css') }}" type="text/css">--}}
 
     {{--display font. support display vote--}}
     {{--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">--}}
 
 
     {{--<!-- javascript and jquery external -->--}}
-    {{--<script src="public/bootstrap/js/jquery.min.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/js/bootstrap.js" type="text/javascript"></script>--}}
-
-    {{--<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/js/jquery-1.11.2.min.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/validate/jquery-2.0.0.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/validate/jquery.validate.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/js/script.js" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/js/jquery.min.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/js/bootstrap.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/validate/jquery-2.0.0.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/validate/jquery.validate.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/js/script.js') }}" type="text/javascript"></script>--}}
 
     {{--datepicker--}}
-    {{--<link rel="stylesheet" href="public/bootstrap/datetime/datepicker.min.css" type="text/css">--}}
-    {{--<script src="public/bootstrap/datetime/moment.min.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/datetime/en-gb.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/datetime/bootstrap.min.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/datetime/bootstrap-datetimepicker.min.js" type="text/javascript"></script>--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/datetime/datepicker.min.css') }}" type="text/css">--}}
+    {{--<script src="{{ asset('bootstrap/datetime/moment.min.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/datetime/en-gb.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/datetime/bootstrap.min.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/datetime/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>--}}
 
     {{--table-data--}}
-    {{--<link rel="stylesheet" href="public/bootstrap/table-data/dataTables.bootstrap.min.css" type="text/css">--}}
-    {{--<script src="public/bootstrap/table-data/jquery.dataTables.min.js" type="text/javascript"></script>--}}
-    {{--<script src="public/bootstrap/table-data/dataTables.bootstrap.min.js" type="text/javascript"></script>--}}
+    {{--<link rel="stylesheet" href="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.css') }}" type="text/css">--}}
+    {{--<script src="{{ asset('bootstrap/table-data/jquery.dataTables.min.js') }}" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>--}}
 
     {{--chart--}}
-    {{--<script src="public/bootstrap/chart/Chart.min.js" type="text/javascript"></script>--}}
+    {{--<script src="{{ asset('bootstrap/chart/Chart.min.js') }}" type="text/javascript"></script>--}}
+
+
+    <link rel="stylesheet" href="public/bootstrap/css/bootstrap-theme.css" type="text/css">
+    <link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="public/bootstrap/css/style.css" type="text/css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+
+    <!-- javascript and jquery external -->
+    <script src="public/bootstrap/js/jquery.min.js" type="text/javascript"></script>
+    <script src="public/bootstrap/js/bootstrap.js" type="text/javascript"></script>
+    <script src="public/bootstrap/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <script src="public/bootstrap/validate/jquery-2.0.0.js" type="text/javascript"></script>
+    <script src="public/bootstrap/validate/jquery.validate.js" type="text/javascript"></script>
+    <script src="public/bootstrap/js/script.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="public/bootstrap/datetime/datepicker.min.css" type="text/css">
+    <script src="public/bootstrap/datetime/moment.min.js" type="text/javascript"></script>
+    <script src="public/bootstrap/datetime/en-gb.js" type="text/javascript"></script>
+    <script src="public/bootstrap/datetime/bootstrap.min.js" type="text/javascript"></script>
+    <script src="public/bootstrap/datetime/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="public/bootstrap/table-data/dataTables.bootstrap.min.css" type="text/css">
+    <script src="public/bootstrap/table-data/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="public/bootstrap/table-data/dataTables.bootstrap.min.js" type="text/javascript"></script>
+    <script src="public/bootstrap/chart/Chart.min.js" type="text/javascript"></script>
 
     <style type="text/css" media="screen">
         .user-menu a {
@@ -122,112 +111,44 @@
         <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
             <div class="row">
                 <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1" id="icon-header">
-                    @if($type=='student')
-                        <a href="student-home">
-                            <img src="{{ url('img/icon-soict.png') }}" class="img-responsive" alt="Image">
-                        </a>
-                    @elseif($type=='lecture')
-                        <a href="lecture-home">
-                            <img src="{{ url('img/icon-soict.png') }}" class="img-responsive" alt="Image">
-                        </a>
-                    @elseif($type=='company')
-                        <a href="company-home">
-                            <img src="{{ url('img/icon-soict.png') }}" class="img-responsive" alt="Image">
-                        </a>
-                    @else
-                        <a href="admin-home">
-                            <img src="{{ url('img/icon-soict.png') }}" class="img-responsive" alt="Image">
-                        </a>
-                    @endif
+                    <a href="{{ route('home') }}">
+                        <img src="{{ url('img/icon-soict.png') }}" class="img-responsive" alt="Image">
+                    </a>
                 </div>
                 <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 hidden-xs hidden-sm hidden-md" id="name-header">
-                    @if($type=='student')
-                        <a href="student-home">
+                    <a href="{{ route('home') }}">
                         <span id="name-school">
                             VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
                         </span></br>
                         <span id="name-project">
                             CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
                         </span>
-                        </a>
-                    @elseif($type=='lecture')
-                        <a href="lecture-home">
-                        <span id="name-school">
-                            VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
-                        </span></br>
-                        <span id="name-project">
-                            CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
-                        </span>
-                        </a>
-                    @elseif($type=='company')
-                        <a href="company-home">
-                        <span id="name-school">
-                            VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
-                        </span></br>
-                        <span id="name-project">
-                            CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
-                        </span>
-                        </a>
-                    @else
-                        <a href="admin-home">
-                        <span id="name-school">
-                            VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
-                        </span></br>
-                        <span id="name-project">
-                            CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
-                        </span>
-                        </a>
-                    @endif
+                    </a>
                 </div>
                 <div class="col-xs-8 col-sm-7 col-md-7 col-lg-8 visible-xs visible-sm visible-md"
                      style="margin-left: -30px">
-                    @if($type=='student')
-                        <a href="student-home">
+                    <a href="{{ route('home') }}">
                         <span id="name-school-xs">
                             VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
                         </span></br>
                         <span id="name-project-xs">
                             CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
                         </span>
-                        </a>
-                    @elseif($type=='lecture')
-                        <a href="lecture-home">
-                        <span id="name-school-xs">
-                            VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
-                        </span></br>
-                        <span id="name-project-xs">
-                            CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
-                        </span>
-                        </a>
-                    @elseif($type=='company')
-                        <a href="company-home">
-                        <span id="name-school-xs">
-                            VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
-                        </span></br>
-                        <span id="name-project-xs">
-                            CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
-                        </span>
-                        </a>
-                    @else
-                        <a href="admin-home">
-                        <span id="name-school-xs">
-                            VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
-                        </span></br>
-                        <span id="name-project-xs">
-                            CỔNG THÔNG TIN THỰC TẬP DOANH NGHIỆP
-                        </span>
-                        </a>
-                    @endif
+                    </a>
                 </div>
                 <div class="col-xs-3 col-sm-4 col-md-4 col-lg-3" style="margin-left: 30px">
                     <div class="row">
                     <span style="font-weight: normal;color:#FFFFFF;float: right">
                         @if (Auth::check())
-                            {{substr($user->name,0,30)}}
+                            @php
+                                $name = ($type == config('settings.role.social')) ?
+                                    Auth::user()->user_name : $user->name;
+                            @endphp
+                            {{ substr($name, 0, 30) }}
+                            <a href="{{ url('logout') }}"
+                               style="color:#FFFFFF; float: right;font-weight: normal">[Đăng xuất]
+                            </a>
                         @endif
-                        <a href="{{url('/')}}"
-                           style="color:#FFFFFF; float: right;font-weight: normal">[Đăng xuất]
-                        </a>
                     </span>
                     </div>
                     <div class="row" style="font-weight: normal;float: right;color:#FFFFFF">
@@ -280,14 +201,16 @@
         </div>
         <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10" style="background-color: #DDDDDD;">
             <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                @if($type=='student')
-
-                @elseif($type=='lecture')
-
-                @elseif($type=='company')
-
-                @elseif($type=='admin')
-
+                @if ($type == config('settings.role.student'))
+                    @include('elements.menu.menu-student')
+                @elseif ($type == config('settings.role.lecture'))
+                    @include('elements.menu.menu-lecture')
+                @elseif ($type == config('settings.role.company'))
+                    @include('elements.menu.menu-company')
+                @elseif ($type == config('settings.role.admin'))
+                    @include('elements.menu.menu-admin')
+                @else
+                    @include('elements.menu.menu-social')
                 @endif
             </div>
             <div class="col-xs-8 col-sm-9 col-md-9 col-lg-9"
@@ -309,7 +232,6 @@
         </a>
     </div>
 </div>
-<!-- <a class="btn btn-default" href="login" role="button">dang nhap</a> -->
 </body>
 <script>
     $(document).ready(function () {
