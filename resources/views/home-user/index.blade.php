@@ -10,60 +10,48 @@
         @yield('title')
     </title>
 
-    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.css') }}" type="text/css">--}}
-    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" type="text/css">--}}
-    {{--<link rel="stylesheet" href="{{ asset('') }}bootstrap/css/bootstrap-theme.min.css" type="text/css">--}}
-    {{--<link rel="stylesheet" href="{{ asset('bootstrap/css/style.css') }}" type="text/css">--}}
-
-    {{--display font. support display vote--}}
-    {{--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">--}}
-
-
-    {{--<!-- javascript and jquery external -->--}}
-    {{--<script src="{{ asset('bootstrap/js/jquery.min.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/js/bootstrap.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/validate/jquery-2.0.0.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/validate/jquery.validate.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/js/script.js') }}" type="text/javascript"></script>--}}
-
-    {{--datepicker--}}
-    {{--<link rel="stylesheet" href="{{ asset('bootstrap/datetime/datepicker.min.css') }}" type="text/css">--}}
-    {{--<script src="{{ asset('bootstrap/datetime/moment.min.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/datetime/en-gb.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/datetime/bootstrap.min.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/datetime/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>--}}
-
-    {{--table-data--}}
-    {{--<link rel="stylesheet" href="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.css') }}" type="text/css">--}}
-    {{--<script src="{{ asset('bootstrap/table-data/jquery.dataTables.min.js') }}" type="text/javascript"></script>--}}
-    {{--<script src="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>--}}
-
-    {{--chart--}}
-    {{--<script src="{{ asset('bootstrap/chart/Chart.min.js') }}" type="text/javascript"></script>--}}
-
-
-    <link rel="stylesheet" href="public/bootstrap/css/bootstrap-theme.css" type="text/css">
-    <link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="public/bootstrap/css/style.css" type="text/css">
+    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap-theme.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('') }}bootstrap/css/bootstrap-theme.min.css" type="text/css">
+    <link rel="stylesheet" href="{{ asset('bootstrap/css/style.css') }}" type="text/css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-
-
     <!-- javascript and jquery external -->
-    <script src="public/bootstrap/js/jquery.min.js" type="text/javascript"></script>
-    <script src="public/bootstrap/js/bootstrap.js" type="text/javascript"></script>
-    <script src="public/bootstrap/js/jquery-1.11.2.min.js" type="text/javascript"></script>
-    <script src="public/bootstrap/validate/jquery-2.0.0.js" type="text/javascript"></script>
-    <script src="public/bootstrap/validate/jquery.validate.js" type="text/javascript"></script>
-    <script src="public/bootstrap/js/script.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="public/bootstrap/datetime/datepicker.min.css" type="text/css">
-    <script src="public/bootstrap/datetime/moment.min.js" type="text/javascript"></script>
-    <script src="public/bootstrap/datetime/en-gb.js" type="text/javascript"></script>
-    <script src="public/bootstrap/datetime/bootstrap.min.js" type="text/javascript"></script>
-    <script src="public/bootstrap/datetime/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="public/bootstrap/table-data/dataTables.bootstrap.min.css" type="text/css">
-    <script src="public/bootstrap/table-data/jquery.dataTables.min.js" type="text/javascript"></script>
-    <script src="public/bootstrap/table-data/dataTables.bootstrap.min.js" type="text/javascript"></script>
-    <script src="public/bootstrap/chart/Chart.min.js" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/js/jquery.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/validate/jquery-2.0.0.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/validate/jquery.validate.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/js/script.js') }}" type="text/javascript"></script>
+    <link rel="stylesheet" href="{{ asset('bootstrap/datetime/datepicker.min.css') }}" type="text/css">
+    <script src="{{ asset('bootstrap/datetime/moment.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/datetime/en-gb.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/datetime/bootstrap.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/datetime/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
+    <link rel="stylesheet" href="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.css') }}" type="text/css">
+    <script src="{{ asset('bootstrap/table-data/jquery.dataTables.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/table-data/dataTables.bootstrap.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bootstrap/chart/Chart.min.js') }}" type="text/javascript"></script>
+
+
+    {{--<link rel="stylesheet" href="public/bootstrap/css/bootstrap-theme.css" type="text/css">--}}
+    {{--<link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css" type="text/css">--}}
+    {{--<link rel="stylesheet" href="public/bootstrap/css/style.css" type="text/css">--}}
+    {{--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">--}}
+    {{--<!-- javascript and jquery external -->--}}
+    {{--<script src="public/bootstrap/js/jquery.min.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/js/bootstrap.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/js/jquery-1.11.2.min.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/validate/jquery-2.0.0.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/validate/jquery.validate.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/js/script.js" type="text/javascript"></script>--}}
+    {{--<link rel="stylesheet" href="public/bootstrap/datetime/datepicker.min.css" type="text/css">--}}
+    {{--<script src="public/bootstrap/datetime/moment.min.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/datetime/en-gb.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/datetime/bootstrap.min.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/datetime/bootstrap-datetimepicker.min.js" type="text/javascript"></script>--}}
+    {{--<link rel="stylesheet" href="public/bootstrap/table-data/dataTables.bootstrap.min.css" type="text/css">--}}
+    {{--<script src="public/bootstrap/table-data/jquery.dataTables.min.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/table-data/dataTables.bootstrap.min.js" type="text/javascript"></script>--}}
+    {{--<script src="public/bootstrap/chart/Chart.min.js" type="text/javascript"></script>--}}
 
     <style type="text/css" media="screen">
         .user-menu a {

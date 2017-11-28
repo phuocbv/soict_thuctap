@@ -70,8 +70,12 @@
                             </td>
                             <td>{{$c->address}}</td>
                             <td>
-                                <a href="#" data-toggle="modal"
-                                   data-target="#{{$c->id}}">
+                                {{--<a href="#" data-toggle="modal" data-target="#{{$c->id}}">--}}
+                                    {{--<span>chi tiết</span>--}}
+                                {{--</a>--}}
+                                <a href="{{ route('showInformationCompany', [
+                                    'companyId' => encrypt($c->id)
+                                ]) }}">
                                     <span>chi tiết</span>
                                 </a>
                             </td>

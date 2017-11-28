@@ -23,6 +23,17 @@ class Company extends Model
         return $this->hasMany('App\CompanyInternShipCourse', 'company_id');
     }
 
+    public function lectureAssignCompany()
+    {
+        return $this->hasOne(LectureAssignCompany::class, 'company_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
     /**
      * get company
      *

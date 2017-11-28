@@ -22,6 +22,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AssignController extends Controller
 {
+    private $arrTransition = [];
+
     public function __construct()
     {
         $this->checkExtention = false;
@@ -45,14 +47,14 @@ class AssignController extends Controller
         foreach ($course as $c) {
             $courseTerm = $c->course_term;
         }
-        /*insert giang vien vao lecture_internship_course*/
-        if ($choseLecture != null) {
-            foreach ($choseLecture as $cl) {
-                if (LectureInternShipCourse::checkLectureInternShipCourse($cl, $courseID)) {
-                    LectureInternShipCourse::insertLectureInternShipCourse($cl, $courseID);
-                }
-            }
-        }
+//        /*insert giang vien vao lecture_internship_course*/
+//        if ($choseLecture != null) {
+//            foreach ($choseLecture as $cl) {
+//                if (LectureInternShipCourse::checkLectureInternShipCourse($cl, $courseID)) {
+//                    LectureInternShipCourse::insertLectureInternShipCourse($cl, $courseID);
+//                }
+//            }
+//        }
 
         /*kiem tra file dau vao va chuyen sang arrTransition*/
         if (FileController::checkExtension($file)) {
@@ -82,7 +84,7 @@ class AssignController extends Controller
                                 );
                                 $validator = Validator::make($input, $rules);
                                 if (!$validator->fails()) {
-                                    $this->arrTransition[] = $row;
+                                    array_push($this->arrTransition, $row);
                                 }
                             });
                         }
@@ -92,7 +94,7 @@ class AssignController extends Controller
         }
         //them tai khoan cho nguoi chua co tai khoan
         $this->addNewUser($this->arrTransition);
-
+        //dd($this->arrTransition);
         /*lấy danh sách sinh viên đã đăng ký. day co the bao gom cac sinh vien bi loai do chua dang ky hoc tap*/
         $studentInCourse = StudentInternShipCourse::getSICFCourseID($courseID);
         $arrStudent = array();
@@ -135,14 +137,18 @@ class AssignController extends Controller
                 $arrRegister[] = $as->id . '*' . $subject;
             }
         }
+        //update filed subject in studen_internship_course
         $this->updateSubject($arrRegister, $courseID);
+        // cho danh sách các student không đăng kí nhưng có trong danh sách vào bảng hàng đợi với status là 0 : hang đợi
         $this->insertStudentQue($arrQue, $courseTerm);
+        //thêm những sinh viên không có trong danh sách mà đăng kí vào trong bảng tạm và có status là 1 : cảnh cáo
         $this->insertStudentDanger($arrDanger, $courseTerm);
+        //xóa sinh viên khi không có trong danh sách mà đăng kí
         $this->deleteRegisterInvalid($arrDanger, $courseID);
-
 
         /*tim cong ty con slot va cho sinh vien dang trong bang chờ phân công vào đó vao do*/
         $companyInCourse = CompanyInternShipCourse::getCompanyInCourse($courseID);
+        //phân công cho những sinh viên không đăng kí mà có trong danh sách
         foreach ($companyInCourse as $cic) {
             $studentTmpQue = StudentTmp::getStudentTmp($courseTerm, 0);
             foreach ($studentTmpQue as $stq) {
@@ -151,7 +157,7 @@ class AssignController extends Controller
                     $studentID = Student::getStudentIDFMsv($stq->msv);
                     StudentInternShipCourse::insertSICHasSubject($studentID, $courseID, $stq->subject);
                     InternShipGroup::insertGroup($studentID, $courseID, $cic->company_id);
-                    StudentTmp::deleteStudentTmp($stq->id);
+                    StudentTmp::deleteStudentTmp($stq->id);//xóa trong bảng hàng đợi
                 }
             }
         }
@@ -160,53 +166,176 @@ class AssignController extends Controller
         /*dem so cong ty da tham gia, dem so giang vien da tham gia*/
 
         //lay cac cong ty da co sinh vien dang ky
+        //để phân công giáo viên
         $companyCourseTmp = CompanyInternShipCourse::getCompanyInCourse($courseID);
-        $companyCourse = array();
+        $companyCourse = array();//lưu danh sách công ty đã có sinh viên đăng ký
         foreach ($companyCourseTmp as $ctmp) {
             if (InternShipGroup::countStudentInCompany($ctmp->company_id, $courseID) != 0) {
                 $companyCourse[] = $ctmp;
             }
         }
-        $lectureCourse = LectureInternShipCourse::getLectureInCourse($courseID);
-        $countCompany = count($companyCourse);
-        $countLecture = count($lectureCourse);
-        $lengthCompany = count($companyCourse);
-        $lengthLecture = count($lectureCourse);
-        if ($countCompany > $countLecture) {
-            $countAssign = (int)($countCompany / $countLecture);
-            for ($i = 0; $i < $lengthLecture; $i++) {
-                $countBreak = 0;
-                for ($j = $this->countSign1; $j < $lengthCompany; $j++) {
-                    InternShipGroup::updateLecture($companyCourse[$j]->company_id, $courseID, $lectureCourse[$i]->lecture_id);
-                    $this->countSign1++;
-                    $countBreak++;
-                    if ($countBreak == $countAssign) {
-                        break;
-                    }
-                }
-            }
-            if ($this->countSign1 < $countCompany) {
-                for ($k = $this->countSign1; $k < $lengthCompany; $k++) {
-                    for ($h = $this->countSign2; $h < $lengthLecture; $h++) {
-                        InternShipGroup::updateLecture($companyCourse[$k]->company_id, $courseID, $lectureCourse[$h]->lecture_id);
-                        $this->countSign2++;
-                        break;
-                    }
-                }
-            }
-        } else {
-            for ($k = 0; $k < $lengthCompany; $k++) {
-                for ($h = $this->countSign3; $h < $lengthLecture; $h++) {
-                    InternShipGroup::updateLecture($companyCourse[$k]->company_id, $courseID, $lectureCourse[$h]->lecture_id);
-                    $this->countSign3++;
-                    break;
-                }
+
+        //phân công giáo viên cho sinh viên
+        foreach ($companyCourse as $item) {
+            $company = Company::find($item->company_id);
+            if ($company->lectureAssignCompany) {
+                InternShipGroup::updateLecture($company->id, $courseID, $company->lectureAssignCompany->lecture->id);
             }
         }
+
+        //lấy danh sách giảng viên tham gia
+        //$lectureCourse = LectureInternShipCourse::getLectureInCourse($courseID);
+
+//        $countCompany = count($companyCourse);
+//        $countLecture = count($lectureCourse);
+//        $lengthCompany = count($companyCourse);
+//        $lengthLecture = count($lectureCourse);
+
+        //do đã phân công sinh viên cho cong ty, giờ chỉ phân công giảng viên phụ trách công ty
+//        if ($countCompany > $countLecture) {
+//            $countAssign = (int)($countCompany / $countLecture);
+//            for ($i = 0; $i < $lengthLecture; $i++) {
+//                $countBreak = 0;
+//                for ($j = $this->countSign1; $j < $lengthCompany; $j++) {
+//                    InternShipGroup::updateLecture($companyCourse[$j]->company_id, $courseID, $lectureCourse[$i]->lecture_id);
+//                    $this->countSign1++;
+//                    $countBreak++;
+//                    if ($countBreak == $countAssign) {
+//                        break;
+//                    }
+//                }
+//            }
+//            if ($this->countSign1 < $countCompany) {
+//                for ($k = $this->countSign1; $k < $lengthCompany; $k++) {
+//                    for ($h = $this->countSign2; $h < $lengthLecture; $h++) {
+//                        InternShipGroup::updateLecture($companyCourse[$k]->company_id, $courseID, $lectureCourse[$h]->lecture_id);
+//                        $this->countSign2++;
+//                        break;
+//                    }
+//                }
+//            }
+//        } else {
+//            for ($k = 0; $k < $lengthCompany; $k++) {
+//                for ($h = $this->countSign3; $h < $lengthLecture; $h++) {
+//                    InternShipGroup::updateLecture($companyCourse[$k]->company_id, $courseID, $lectureCourse[$h]->lecture_id);
+//                    $this->countSign3++;
+//                    break;
+//                }
+//            }
+//        }
 
         /*cap nhat trang thai cua khoa thuc tap*/
         InternShipCourse::updateStatus($courseID);
         return redirect()->back()->with('assignSuccess', 'Phân công thành công');
+    }
+
+    /**
+     * chức năng phân công thủ cong từng người một
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addAssignStudent(Request $request)
+    {
+        $param = $request->only('msv', 'nameStudent', 'grade', 'companyId', 'courseId', 'subject', 'program_university');
+        $email = trim($param['msv']) . '@student.hust.edu.vn';
+        $courseId = decrypt($param['courseId']);
+
+        $company = Company::find($param['companyId']);
+
+        //check cong ty
+        if (!$company) {
+            return redirect()->back()->with('error', 'Công ty không tồn tại');
+        }
+
+        //check phân công giảng viên
+        if (!$company->lectureAssignCompany) {
+            return redirect()->back()->with('error', 'Công ty chưa được phân công giảng viên');
+        }
+
+        //lay lecture da phan cong cho cong ty
+        $lecture = $company->lectureAssignCompany->lecture;
+
+        //check tồn tại tài khoản
+        $user = MyUser::where([
+            'user_name' => $param['msv'],
+            'email' => $email
+        ])->first();
+
+        //trường hợp mã số sinh viên đã có tài khoản
+        if ($user) {
+            //kiểm tra tài khoản này đã được phân công chưa
+            $studentInternshipCourse =  StudentInternShipCourse::checkSI($user->student->id, $courseId);
+            //da phan cong
+            if (!$studentInternshipCourse) {
+                return redirect()->back()->with('error', 'Sinh viên này đã được phân công');
+            }
+            $internshipCourse = InternShipCourse::find($courseId);
+            $checkMSVCourseTerm = StudentTmp::checkMSVCourseTerm($param['msv'], $internshipCourse->course_term);
+            //nếu tôn tại trong bảng StudentTmp thì phân công lại và xóa đi
+            if (!$checkMSVCourseTerm) {
+                StudentTmp::deleteStudentTmp2($param['msv'], $internshipCourse->course_term);
+            }
+
+            //them vao bang dang ki thuc tap cua sinh vien
+            StudentInternShipCourse::insertSICHasSubject($user->student->id, $courseId, $param['subject']);
+
+            //cap nhat so luong sinh vien tiep nhan cua cong ty
+            $quantity = CompanyInternShipCourse::getQuantity($param['companyId'], $courseId);
+            $countStudent = InternShipGroup::countStudentInCompany($param['companyId'], $courseId);
+
+            //trong trường hợp vượt quá số lượng sinh viên tối da thì phải tăng quantity lên 1
+            if ($countStudent == $quantity) {
+                CompanyInternShipCourse::updateStudentQuantity($param['companyId'], $courseId, $quantity + 1);
+            }
+
+            //phân công giang viên cho sinh viên
+            InternShipGroup::insertGroupAddLectureID($user->student->id, $lecture->id, $param['companyId'], $courseId);
+            return redirect()->back()->with('assignAdditionSuccess', 'Thêm phân công thành công');
+        }
+
+        $user = [
+            'msv' => $param['msv'],
+            'grade' => $param['grade'],
+            'program_university' => $param['program_university'],
+            'name' => $param['nameStudent']
+        ];
+
+        //theem nguoi dung moi
+        $this->addOneNewUser($user);
+
+        //lấy lại user sau khi thêm mới
+        $user = MyUser::where([
+            'user_name' => $param['msv'],
+            'email' => $email
+        ])->first();
+
+        //them vao bang dang ki thuc tap cua sinh vien
+        StudentInternShipCourse::insertSICHasSubject($user->student->id, $courseId, $param['subject']);
+
+        //cap nhat so luong sinh vien tiep nhan cua cong ty
+        $quantity = CompanyInternShipCourse::getQuantity($param['companyId'], $courseId);
+        $countStudent = InternShipGroup::countStudentInCompany($param['companyId'], $courseId);
+
+        //trong trường hợp vượt quá số lượng sinh viên tối da thì phải tăng quantity lên 1
+        if ($countStudent == $quantity) {
+            CompanyInternShipCourse::updateStudentQuantity($param['companyId'], $courseId, $quantity + 1);
+        }
+
+        InternShipGroup::insertGroupAddLectureID($user->student->id, $lecture->id, $param['companyId'], $courseId);
+        return redirect()->back()->with('assignAdditionSuccess', 'Thêm phân công thành công');
+    }
+
+    /**
+     *them một nguoi dung chua co tai khoan khi phan cong
+     * @param $arrTran
+     */
+    public function addOneNewUser($student)
+    {
+        $email = trim($student['msv']) . '@student.hust.edu.vn';
+        MyUser::insertUser(trim($student['msv']), $email, trim($student['msv']), 'student');
+        $userId = MyUser::getID($student['msv']);
+        Student::insertStudent(trim($student['name']), $student['grade'], $student['program_university'], trim($student['msv']), $userId);
     }
 
     /**
@@ -244,6 +373,8 @@ class AssignController extends Controller
     /**
      * them sinh vien co trong arrTransision nhung khong co ten trong bang dang ky
      * vao bang student_tmp de cho phan cong sau
+     * những sinh viên có trong file excel nhưng không đăng ký
+     * có status = 0
      *
      * @param $arrQue
      * @param $courseTerm
@@ -260,6 +391,8 @@ class AssignController extends Controller
     /**
      * them nhung sinh vien khong co ten trong arrTransition nhung da dang ky. Nhung sinh vien nay se bi xoa dang ky
      * va cho canh cao
+     * những sinh viên không có trong file excel nhưng mà đăng ký => cho vào danh sách cảnh cáo
+     * có status  = -1
      *
      * @param $arrDanger
      * @param $courseTerm
@@ -290,6 +423,14 @@ class AssignController extends Controller
         }
     }
 
+    /**
+     * trong truong hop het cho
+     * thi phai them sinh vien vao 1 cong ty
+     * va tang so luong sinh vien max cua moi cong ty
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function AssignAdditional(Request $request)
     {
         $studentID = $request->input('studentID');
@@ -300,6 +441,19 @@ class AssignController extends Controller
         $msv = "";
         $courseTerm = "";
         $subject = "";
+
+        $company = Company::find($companyID);
+        if (!$company) {
+            return redirect()->back()->with('error', 'Công ty không tồn tại');
+        }
+
+        //check phân công giảng viên
+        if (!$company->lectureAssignCompany) {
+            return redirect()->back()->with('error', 'Công ty chưa được phân công giảng viên');
+        }
+
+        //lay lecture da phan cong cho cong ty
+        $lecture = $company->lectureAssignCompany->lecture;
 
         /*
          * kiem tra dau vao vi ton tai input hidden. xem co sinh vien, cong ty, khoa thuc tap nhu vay khong
@@ -329,19 +483,24 @@ class AssignController extends Controller
 
                 //cap nhat so luong sinh vien tiep nhan cua cong ty
                 $quantity = CompanyInternShipCourse::getQuantity($companyID, $courseID);
-                CompanyInternShipCourse::updateStudentQuantity($companyID, $courseID, $quantity + 1);
+               // CompanyInternShipCourse::updateStudentQuantity($companyID, $courseID, $quantity + 1);
+                $countStudent = InternShipGroup::countStudentInCompany($companyID, $courseID);
 
-                //them vao bang group
-                $lectureID = "";
-                $lectureID1 = InternShipGroup::getLectureID($companyID, $courseID);
-                if ($lectureID1 == null) {
-                    $listLecture = LectureInternShipCourse::getLectureInCourse($courseID);
-                    $lectureIDRandom = $listLecture->random()->lecture_id;
-                    $lectureID = $lectureIDRandom;
-                } else {
-                    $lectureID = $lectureID1;
+                //trong trường hợp vượt quá số lượng sinh viên tối da thì phải tăng quantity lên 1
+                if ($countStudent == $quantity) {
+                    CompanyInternShipCourse::updateStudentQuantity($companyID, $courseID, $quantity + 1);
                 }
-                InternShipGroup::insertGroupAddLectureID($studentID, $lectureID, $companyID, $courseID);
+                //them vao bang group
+//                $lectureID = "";
+//                $lectureID1 = InternShipGroup::getLectureID($companyID, $courseID);
+//                if ($lectureID1 == null) {
+//                    $listLecture = LectureInternShipCourse::getLectureInCourse($courseID);
+//                    $lectureIDRandom = $listLecture->random()->lecture_id;
+//                    $lectureID = $lectureIDRandom;
+//                } else {
+//                    $lectureID = $lectureID1;
+//                }
+                InternShipGroup::insertGroupAddLectureID($studentID, $lecture->id, $companyID, $courseID);
             }
         }
         if ($this->checkAssignAdditional) {

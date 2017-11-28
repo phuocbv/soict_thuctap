@@ -10,7 +10,7 @@ class StudentInternShipCourse extends Model
 
     public function student()
     {
-        return $this->belongsTo('Student', 'student_id');
+        return $this->belongsTo(Student::class, 'student_id');
     }
 
     public function internShipCourse()
@@ -105,6 +105,11 @@ class StudentInternShipCourse extends Model
      */
     public static function getSICFCourseID($inCourseID)
     {
+//        InternShipGroup::where([
+//            'internship_course_id' => $inCourseID,
+//            'lecture_id' => null
+//        ])->get();
+
         $sic = StudentInternShipCourse::where('internship_course_id', '=', $inCourseID)->get();
         return $sic;
     }

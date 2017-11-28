@@ -164,8 +164,8 @@
                                         <span>Phân công</span>
                                     </a>
                                 @else
-                                    @if($timeCurrent>strtotime(date('Y-m-d',strtotime($c->finish_register)))
-                                    &&$timeCurrent<strtotime(date('Y-m-d',strtotime($c->from_date))))
+                                    @if($timeCurrent > strtotime(date('Y-m-d',strtotime($c->finish_register)))
+                                    && $timeCurrent < strtotime(date('Y-m-d',strtotime($c->to_date))))
                                         <a href="#" class="btn btn-primary btn-sm"
                                            data-toggle="modal"
                                            data-target="#{{$c->id}}{{"assign"}}">
@@ -298,10 +298,12 @@
                               onsubmit="return validateFormAssign({{$c->id}})" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="courseID" id="courseID" value="{{encrypt($c->id)}}">
-                            <span style="font-size: 16px">Chọn file sinh viên: </span>
-                            <span><input type="file" name="file" id="file{{$c->id}}"
-                                         style="display: inline" required="required"
-                                         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></span>
+                            <div class="form-group">
+                                <span style="font-size: 16px">Chọn file sinh viên: </span>
+                                <span><input type="file" name="file" id="file{{$c->id}}"
+                                             style="display: inline" required="required"
+                                             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></span>
+                            </div>
                             <br>
                             <span style="font-size: 16px">Chọn thêm giáo viên: </span>
 
@@ -340,7 +342,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div style="text-align: center;margin-top: 15px">
+                            <div class="form-group">
                                 <button type="submit" class="btn btn-primary">Phân công
                                 </button>
                             </div>

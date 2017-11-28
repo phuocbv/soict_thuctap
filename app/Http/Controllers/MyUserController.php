@@ -9,6 +9,7 @@ use App\CompanyInternShipCourse;
 use App\CompanyVote;
 use App\InternShipGroup;
 use App\Lecture;
+use App\LectureAssignCompany;
 use App\LectureInternShipCourse;
 use App\LectureReport;
 use App\MyUser;
@@ -90,9 +91,11 @@ class MyUserController extends Controller
     {
         $admin = $this->currentUser()->admin;
         $type = 'admin';
+        $listLecture = Lecture::orderBy('name', 'ASC')->get();
 
         return view('my-user.add-user')->with([
             'user' => $admin,
+            'listLecture' => $listLecture,
             'type' => $type
         ]);
     }
@@ -191,7 +194,8 @@ class MyUserController extends Controller
                 'password' => 'required|min:6',
                 'emailCompany' => 'required|email',
                 'type' => 'required',
-                'nameCompany' => 'required'
+                'nameCompany' => 'required',
+                'lectureId' => 'required'
             );
             $validator = Validator::make($input, $rules);
             /*
@@ -201,6 +205,11 @@ class MyUserController extends Controller
                 MyUser::insertUser($request->input('companyUserName'), $emailCompany, $password, $type);
                 $userID = MyUser::getID($request->input('companyUserName'));
                 Company::insertCompany($request->input('nameCompany'), $userID);
+                $userCompany = MyUser::find($userID);
+                LectureAssignCompany::create([
+                    'lecture_id' => $request->input('lectureId'),
+                    'company_id' => $userCompany->company->id
+                ]);
                 return redirect('list-user')->with('insertSuccess', 'OK! Thêm người dùng thành công');
             } else {
                 return redirect()->back()->with('addOneError', 'Lỗi thêm người dùng');
@@ -235,6 +244,7 @@ class MyUserController extends Controller
                                     'programing_university' => $row->programing_university,
                                     'qualification' => $row->qualification,
                                     'address' => $row->address,
+                                    'emailLecture' => $row->email_lecture
                                 );
                                 if (trim($row->type) == 'student') {
                                     $rules = array(
@@ -293,6 +303,7 @@ class MyUserController extends Controller
                                         'email' => 'required|email',
                                         'name' => 'required',
                                         'type' => 'required',
+                                        'emailLecture' => 'required',
                                     );
                                     $validator = Validator::make($input, $rules);
                                     if (!$validator->fails()) {
@@ -302,6 +313,12 @@ class MyUserController extends Controller
                                             MyUser::insertUser(trim($row->username), trim($row->email), trim($row->password), trim($row->type));
                                             $userID = MyUser::getID(trim($row->username));
                                             Company::insertCompany(trim($row->name), $userID);
+                                            $userCompany = MyUser::find($userID);
+                                            $userLecture = MyUser::where('email', trim($row->email_lecture))->first();
+                                            LectureAssignCompany::create([
+                                                'lecture_id' => $userLecture->lecture->id,
+                                                'company_id' => $userCompany->company->id
+                                            ]);
                                         } else {
                                             if (!MyUser::checkEmail(trim($row->email))) {
                                                 $this->loopEmail = $this->loopEmail . $row->email . ',';

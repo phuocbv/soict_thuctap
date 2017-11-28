@@ -106,10 +106,7 @@ class ManageInCourseController extends Controller
     {
         //$adminSession = new  SessionController();
         $admin = $this->currentUser()->admin;
-        $adminID = 0;
-        foreach ($admin as $am) {
-            $adminID = $am->id;
-        }
+        $adminID = $admin->id;
         $start = strtotime($request->input('start'));
         $finish = strtotime($request->input('finish'));
         $startTerm1 = strtotime($request->input('startTerm1'));
@@ -306,7 +303,7 @@ class ManageInCourseController extends Controller
                 }
                 foreach ($allCompany as $alc) {
                     if (CompanyInternShipCourse::checkCompanyInternShipCourse($alc->id, $internShipCourseID)) {
-                        CompanyInternShipCourse::insertCompanyInternShipCourse($alc->id, $internShipCourseID, 0);
+                        CompanyInternShipCourse::insertCompanyInternShipCourse($alc->id, $internShipCourseID, $alc->count_student_default);
                     }
                 }
                 $success = 'Tạo thành công khóa thưc tập kỳ ' . $getTerm;
@@ -337,19 +334,15 @@ class ManageInCourseController extends Controller
        * get comNotify
        */
         $notify = News::getNotify();
-
-//        $adminSession = new  SessionController();
-//        $admin = Admin::getAdmin($adminSession->getAdminSession());
         $admin = Auth::user()->admin;
         $type = 'admin';
 
         $courseID = $request->input('id');
+        $nowDate = date('Y-m-d');
         /*
          * lay khoa thuc tap
          */
         $course = InternShipCourse::getInCourse($courseID);
-
-
         /*
          * lay danh sach sinh vien tham gia khoa thuc tap
          */
@@ -413,6 +406,7 @@ class ManageInCourseController extends Controller
             'notify' => $notify,
             'user' => $admin,
             'type' => $type,
+            'nowDate' => $nowDate
         ]);
     }
 
@@ -761,15 +755,30 @@ class ManageInCourseController extends Controller
         foreach ($course as $c) {
             $status = $c->status;
         }
+        //tim ton tai cong ty
+        $company = Company::find($companyID);
+        if (!$company) {
+            return redirect()->back()->with('error', 'Công ty không tồn tại');
+        }
+
+        //check phân công giảng viên
+        if (!$company->lectureAssignCompany) {
+            return redirect()->back()->with('error', 'Công ty chưa được phân công giảng viên');
+        }
+
+        //lay lecture da phan cong cho cong ty
+        $lecture = $company->lectureAssignCompany->lecture;
+
         if (CompanyInternShipCourse::checkCompanyInternShipCourse($companyID, $courseID)) {//ban ghi chua ton tai
             CompanyInternShipCourse::insert($companyID, $courseID, 1, "", "");
             if ($status == "chưa phân công") {
                 InternShipGroup::insertGroup($studentID, $courseID, $companyID);
             } else {
                 //lay ngau nhien mot giang vien trong cac giang vien da tham gia
-                $listLecture = LectureInternShipCourse::getLectureInCourse($courseID);
-                $lectureIDRandom = $listLecture->random()->lecture_id;
-                InternShipGroup::insertGroupAddLectureID($studentID, $lectureIDRandom, $companyID, $courseID);
+//                $listLecture = LectureInternShipCourse::getLectureInCourse($courseID);
+//                $lectureIDRandom = $listLecture->random()->lecture_id;
+
+                InternShipGroup::insertGroupAddLectureID($studentID, $lecture->id, $companyID, $courseID);
             }
         } else {//neu da ton tai
             $quantity = CompanyInternShipCourse::getQuantity($companyID, $courseID);
@@ -778,15 +787,15 @@ class ManageInCourseController extends Controller
                 InternShipGroup::insertGroup($studentID, $courseID, $companyID);
             } else {
                 //lay ngau nhien mot giang vien trong cac giang vien da tham gia
-                $lectureID = "";
-                $lectureIDTmp = InternShipGroup::getLectureID($companyID, $courseID);
-                if ($lectureIDTmp == null) {
-                    $listLecture = LectureInternShipCourse::getLectureInCourse($courseID);
-                    $lectureID = $listLecture->random()->lecture_id;
-                } else {
-                    $lectureID = $lectureIDTmp;
-                }
-                InternShipGroup::insertGroupAddLectureID($studentID, $lectureID, $companyID, $courseID);
+//                $lectureID = "";
+//                $lectureIDTmp = InternShipGroup::getLectureID($companyID, $courseID);
+//                if ($lectureIDTmp == null) {
+//                    $listLecture = LectureInternShipCourse::getLectureInCourse($courseID);
+//                    $lectureID = $listLecture->random()->lecture_id;
+//                } else {
+//                    $lectureID = $lectureIDTmp;
+//                }
+                InternShipGroup::insertGroupAddLectureID($studentID, $lecture->id, $companyID, $courseID);
             }
         }
         return redirect()->back()->with('change-company', 'Đã chuyển công ty');

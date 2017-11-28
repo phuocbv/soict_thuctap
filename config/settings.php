@@ -1,4 +1,5 @@
 <?php
+define('ACCESS_TOKEN_SOCIAL', 'accessTokenSocial');
 
 return [
     //phân quyền người dùng
@@ -13,5 +14,7 @@ return [
     //login social
     'provider' => [
         'facebook' => 'facebook',
-    ]
+    ],
+
+    'groupID' => '756558567743997',
 ];

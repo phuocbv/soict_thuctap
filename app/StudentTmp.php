@@ -8,6 +8,10 @@ class StudentTmp extends Model
 {
     public $table = "student_tmp";
 
+    protected $fillable = [
+        'msv', 'course_term', 'status', 'subject'
+    ];
+
     /**
      * insert new student_tmp
      *

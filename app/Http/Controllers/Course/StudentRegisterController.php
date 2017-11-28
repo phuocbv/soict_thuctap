@@ -158,18 +158,22 @@ class StudentRegisterController extends Controller
         /*
          * lay gioi han dang ky vao mot cong ty
          */
-        $comIn = CompanyInternShipCourse::getComInCourse($companyID, $internShipCourseID);
-        $studentQuantity = "";
-        foreach ($comIn as $ci) {
-            $studentQuantity = $ci->student_quantity;
-        }
+        $comIn = CompanyInternShipCourse::getComInCourse($companyID, $internShipCourseID)->first();
+        $studentQuantity = $comIn->student_quantity;
+//        foreach ($comIn as $ci) {
+//            $studentQuantity = $ci->student_quantity;
+//        }
 
         /*
          * dem so luong sinh vien da dang ky vao mot cong ty
          */
         $countStudent = InternShipGroup::countStudentInCompany($companyID, $internShipCourseID);
+        //check full student in company
         if (!CompanyInternShipCourse::checkRegisterFull($countStudent, $studentQuantity)) {
             $countCheck = count(InternShipGroup::getGroupFollowSI($studentID, $internShipCourseID));
+
+            $accessToken = session()->get(ACCESS_TOKEN_SOCIAL);
+
             if ($countCheck > 0) {
                 $checkCompanyID1 = "";
                 $groupID = "";
@@ -180,14 +184,24 @@ class StudentRegisterController extends Controller
                 }
                 if ($checkCompanyID1 == $companyID) {
                     return redirect()->back()->with('noChange', 'Bạn chưa thay đổi đăng ký');
-                } else {
+                } else {//thay đổi đăng ký
                     InternShipGroup::updateGroup($groupID, $companyID);
                     if (CompanyVote::checkStudentCompany($studentID, $companyID)) {
                         CompanyVote::insert($studentID, $companyID);
                     }
                     return redirect()->back()->with('change', 'Bạn đã thay đổi đăng ký');
                 }
-            } else {
+            } else {//bắt đầu đăng ký
+                //$this->postInGroup($comIn, $student, null, 'create');
+
+                if ($accessToken == null) {
+                    return redirect()->route('provider.redirect', [
+                        'provider' => 'facebook'
+                    ]);
+                }
+
+                $this->postInGroup($comIn, $student, null, 'create', $accessToken);
+
                 StudentInternShipCourse::insertSIC($studentID, $internShipCourseID);
                 InternShipGroup::insertGroup($studentID, $internShipCourseID, $companyID);
                 if (CompanyVote::checkStudentCompany($studentID, $companyID)) {
@@ -208,6 +222,40 @@ class StudentRegisterController extends Controller
             }
         }
     }
+
+    private function postInGroup($company, $student, $lecture, $action, $accessToken)
+    {
+        $message = $action . "\n";
+        //$message+= $company->name;
+
+        $facebook = new \Facebook\Facebook([
+            'app_id' => config('services.facebook.client_id'),
+            'app_secret' => config('services.facebook.client_secret'),
+        ]);
+
+        try {
+            // Returns a `Facebook\FacebookResponse` object
+            $response = $facebook->post(
+                config('settings.groupID') . '/feed',
+                [
+                    'message' => 'test app'
+                ],
+                $accessToken
+            );
+        } catch(\Facebook\Exceptions\FacebookResponseException $e) {
+            echo 'Graph returned an error: ' . $e->getMessage();
+            exit;
+        } catch(\Facebook\Exceptions\FacebookSDKException $e) {
+            echo 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+        }
+        $graphNode = $response->getGraphNode();
+        //dd($graphNode);
+        if ($action == 'create') {
+
+        }
+    }
+
 
     public function courseJoin()
     {

@@ -87,6 +87,26 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default" style="min-height: 50vh">
+        <div class="panel-heading">
+            <a href="{{url('/')}}" style="color: #333">
+                <span class="name-page-profile">Bình luận về công ty</span>
+            </a>
+        </div>
+        <div class="panel-body body-padding">
+            <div class="fb-comments" data-href="{{ route('showInformationCompany', ['company' => $user->id]) }}" data-numposts="5"></div>
+        </div>
+    </div>
+    <div id="fb-root"></div>
+    <script>
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/vi_VN /sdk.js#xfbml=1&version=v2.11&appId={{ config('services.facebook.client_id') }}';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
     @if ($user)
         <div class="modal fade" id="{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
             <div class="modal-dialog modal-lg" role="document">

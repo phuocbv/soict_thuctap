@@ -54,4 +54,9 @@ class User extends Authenticatable
         return $query->where('email', $data)
             ->orWhere('provider_id', $data);
     }
+
+    public function scopeGetByInput($query, $data)
+    {
+        return $query->where($data);
+    }
 }

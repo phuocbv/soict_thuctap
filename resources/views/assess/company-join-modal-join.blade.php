@@ -1063,7 +1063,7 @@
                                         @foreach($arrStudent as $as)
 
                                             @if($i==2)
-                                                @if(($yearToDate % 100 != 0) && ($$yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
+                                                @if(($yearToDate % 100 != 0) && ($yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
                                                     <tr>
                                                         <td>{{$as->name}}</td>
                                                         @for($j=1;$j<=29;$j++)
