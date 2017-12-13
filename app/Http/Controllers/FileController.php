@@ -17,7 +17,7 @@ class FileController extends Controller
      */
     public static function checkExtension($file)
     {
-        $extension = $file->extension();
+        $extension = $file->getClientOriginalExtension();
         if ($extension == 'xlsx' || $extension == 'xls') {
             return true;
         } else {

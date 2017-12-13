@@ -10,6 +10,10 @@ class MyUser extends Model
 {
     public $table = 'users';
 
+    protected $fillable = [
+        'name', 'email', 'password', 'user_name', 'provider', 'provider_id', 'type'
+    ];
+
     public function student()
     {
         return $this->hasOne('App\Student', 'user_id');

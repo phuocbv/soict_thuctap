@@ -1,4 +1,7 @@
 @extends('home-user.index')
+@section('title')
+    {{ 'Chi tiết kỳ thực tập' }}
+@endsection
 @section('user-content')
     <style>
         .name-summary {
@@ -65,6 +68,9 @@
     @endif
     @if(session()->has('assignAdditionSuccess'))
         <div class="alert alert-success myLabel" role="alert">{{session()->get('assignAdditionSuccess')}}</div>
+    @endif
+    @if(session()->has('error'))
+        <div class="alert alert-danger myLabel" role="alert">{{session()->get('error')}}</div>
     @endif
     <div class="panel panel-default" style="font-family: Arial">
         <div class="panel-body">
@@ -165,6 +171,7 @@
                                 <thead>
                                 <tr>
                                     <th style="min-width: 82px">Tên công ty</th>
+                                    <th style="min-width: 240px">Số lượng sinh viên</th>
                                     <th style="min-width: 240px">Địa chỉ</th>
                                     <th style="min-width: 104px">Ngày thành lập</th>
                                     <th style="min-width: 150px">Mail hỗ trợ</th>
@@ -174,6 +181,7 @@
                                 <tfoot>
                                 <tr>
                                     <th style="min-width: 82px">Tên công ty</th>
+                                    <th style="min-width: 240px">Số lượng sinh viên</th>
                                     <th style="min-width: 240px">Địa chỉ</th>
                                     <th style="min-width: 104px">Ngày thành lập</th>
                                     <th style="min-width: 150px">Mail hỗ trợ</th>
@@ -182,8 +190,12 @@
                                 </tfoot>
                                 <tbody>
                                 @foreach($arrCompany as $ac)
+                                    @php
+                                        $companyInternshipCourse = \App\CompanyInternShipCourse::getComInCourse($ac->id, $course->first()->id)->first();
+                                    @endphp
                                     <tr>
                                         <td>{{$ac->name}}</td>
+                                        <td>{{$companyInternshipCourse->student_quantity}}</td>
                                         <td>{{$ac->address}}</td>
                                         <td>
                                             @if(date('Y',strtotime($ac->birthday))!=1970 &&date('Y',strtotime($ac->birthday))!=-0001)
@@ -198,7 +210,129 @@
                             </table>
                         </div>
                     </div>
+
                     <div role="tabpanel" class="tab-pane" id="assign">
+                        @if($course->first()->start_register == null || $course->first()->finish_register == null)
+                            <div class="">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Không phải thời điểm phân công')">
+                                    <span>Thêm phân công</span>
+                                </a>
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Không phải thời điểm phân công')">
+                                    <span>Import file excel</span>
+                                </a>
+                            </div>
+                        @elseif (strtotime($nowDate) >= strtotime($course->first()->start_register)
+                                && strtotime($nowDate) <= strtotime($course->first()->finish_register))
+                            <div class="">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Đang ở thời gian đang kí, không được phân công')">
+                                    <span>Thêm phân công</span>
+                                </a>
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Đang ở thời gian đang kí, không được phân công')">
+                                    <span>Import file excel</span>
+                                </a>
+                            </div>
+                        @elseif (strtotime($nowDate) > strtotime($course->first()->finish_register)
+                                && strtotime($nowDate) <= strtotime($course->first()->to_date))
+                            <div class="">
+                                <a href="javascript:void(0)" id="btnModalThemPhanCong" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalThemPhanCong">
+                                    <span>Thêm phân công</span>
+                                </a>
+                                <a href="javascript:void(0)" id="btnImportExcel" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#importExcel">
+                                    <span>Import file excel</span>
+                                </a>
+                                <a href="javascript:void(0)" id="btnExportExcel" class="btn btn-primary btn-sm"
+                                   data-internship-course-id="{{ $course->first()->id }}">
+                                    <span>Export file excel</span>
+                                </a>
+                                <form action="{{ route('admin.excelController.exportAssignToExcel') }}" method="post" id="formExportExcel">
+                                    <input type="hidden" value="{{ $course->first()->id }}" name="courseId">
+                                    <input type="hidden" value="{{ csrf_token()  }}" name="_token">
+                                </form>
+
+                            </div>
+                        @else
+                            <div class="">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Không phải thời điểm phân công')">
+                                    <span>Thêm phân công</span>
+                                </a>
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Không phải thời điểm phân công')">
+                                    <span>Import file excel</span>
+                                </a>
+                            </div>
+                        @endif
+
+                        <div class="modal fade" id="modalThemPhanCong" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form method="post" action="{{ route('admin.assignController.addAssignStudent') }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="courseId" value="{{ encrypt($courseID) }}">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel">Phân công sinh viên</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="mssv">Mã số sinh viên cần phân công</label>
+                                                <input type="text" name="msv" class="form-control" placeholder="Mã số sinh viên" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nameStudent">Tên sinh viên</label>
+                                                <input type="text" class="form-control" placeholder="Tên sinh viên" name="nameStudent" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="grade">Khóa</label>
+                                                <input type="text" class="form-control" placeholder="Khóa" name="grade" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="program_university">Chương trình đạo tạo</label>
+                                                <input type="text" class="form-control" placeholder="Chương trình đạo tạo" name="program_university" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="subject">Mã học phần</label>
+                                                <input type="text" class="form-control" placeholder="Subject" name="subject" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="companyId">Danh sách công ty</label>
+                                                <div class="table-responsive" style="height: 400px; overflow-y: auto;">
+                                                    <table class="table table-hover table-bordered">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Tên công ty</th>
+                                                            <th>Số sinh viên đã nhận/Tổng số</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        @foreach($arrCompany as $ac)
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="radio" name="companyId" required="required" value="{{ $ac->id }}">
+                                                                </td>
+                                                                <td>{{ $ac->name }}</td>
+                                                                <?php
+                                                                    $comIC = \App\CompanyInternShipCourse::getComInCourse($ac->id, $courseID);
+                                                                    $countStudent = \App\InternShipGroup::countStudentInCompany($ac->id, $courseID);
+                                                                ?>
+                                                                @foreach($comIC as $cic)
+                                                                    <td>{{ $countStudent }}/{{$cic->student_quantity}}</td>
+                                                                @endforeach
+                                                            </tr>
+                                                        @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                            <button type="submit" class="btn btn-primary">Phân công</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title name-page-profile align-assign">Danh sách sinh viên đã phân
@@ -215,6 +349,7 @@
                                         <th style="min-width: 84px">Chương trình</th>
                                         <th style="width: 66px">phân công</th>
                                         <th style="min-width: 133px">Giảng viên phụ trách</th>
+                                        <th style="min-width: 133px">Chỉnh sửa</th>
                                     </tr>
                                     </thead>
                                     <tfoot>
@@ -226,6 +361,7 @@
                                         <th style="min-width: 84px">Chương trình</th>
                                         <th style="width: 66px">phân công</th>
                                         <th style="min-width: 133px">Giảng viên phụ trách</th>
+                                        <th style="min-width: 133px">Chỉnh sửa</th>
                                     </tr>
                                     </tfoot>
                                     <tbody>
@@ -284,6 +420,32 @@
                                                             {{$l->name}}
                                                         @endforeach
                                                     </td>
+                                                    <td>
+
+                                                        @if (strtotime($nowDate) > strtotime($course->first()->finish_register)
+                                                           && strtotime($nowDate) <= strtotime($course->first()->to_date))
+                                                            <div class="btn-group">
+                                                                <a href="javascript:void(0)"
+                                                                    class="btn btn-success btn-sm error-edit-time btnEditAssign"
+                                                                    data-internship-group-id="{{ $asub->id }}" >
+                                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                                </a>
+                                                                <a href="javascript:void(0)"
+                                                                   class="btn btn-danger btn-sm btnDeleteAssign"
+                                                                   data-internship-group-id="{{ $asub->id }}">
+                                                                    <span class="glyphicon glyphicon-remove-sign"></span>
+                                                                </a>
+                                                            </div>
+                                                        @else
+                                                            <div class="btn-group">
+                                                                <a href="javascript:void(0)"
+                                                                   class="btn btn-danger btn-sm"
+                                                                   data-internship-group-id="{{ $asub->id }}"  onclick="alert('Không phải thời điểm phân công nên không xóa được')">
+                                                                    <span class="glyphicon glyphicon-remove-sign"></span>
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                                 @endforeach
@@ -293,9 +455,7 @@
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title name-page-profile align-assign">Danh sách sinh chưa phân công (do
-                                    hết
-                                    chỗ)</h3>
+                                <h3 class="panel-title name-page-profile align-assign">Danh sách sinh chưa phân công</h3>
                             </div>
                             <div class="table-responsive student-assign">
                                 <table id="student-not-assign" class="table table-bordered">
@@ -331,10 +491,18 @@
                                                     {{$s->program_university}}
                                                 </td>
                                                 <td>
-                                                    <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                       data-target="#{{$s->id}}{{"studentQue"}}">
-                                                        <span>Phân công</span>
-                                                    </a>
+
+                                                    @if (strtotime($nowDate) > strtotime($course->first()->finish_register)
+                                                            && strtotime($nowDate) <= strtotime($course->first()->to_date))
+                                                        <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
+                                                           data-target="#{{$s->id}}{{"studentQue"}}">
+                                                            <span>Phân công lại</span>
+                                                        </a>
+                                                    @else
+                                                        <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Không phải thời điểm phân công')">
+                                                            <span>Phân công lại</span>
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -349,7 +517,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title name-page-profile align-assign">Danh sách sinh viên không được
-                                    tham gia (do chưa đăng ký học tập)</h3>
+                                    tham gia (do chưa đăng ký học tập hoặc không có trong danh sách phân công)</h3>
                             </div>
                             <div class="table-responsive student-assign">
                                 <table id="student-danger-assign" class="table table-bordered">
@@ -528,16 +696,20 @@
                                 </table>
                             </div>
                         </div>
+                        <div>
                         @include('manage-internship-course.tab-lecture-assess')
-                        @include('manage-internship-course.tab-timekeeping')
+                        </div>
+                        <div id="tabTimekeeping">
+                            @include('manage-internship-course.tab-timekeeping')
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    @include('manage-internship-course.modal-student-result')
-
+    <div id="studentResult">
+        @include('manage-internship-course.modal-student-result')
+    </div>
     @foreach($arrStudentQue as $asq)
         <?php
         $student = \App\Student::getStudentFMSV($asq->msv);
@@ -562,7 +734,7 @@
                                 <input type="hidden" name="studentID" id="studentID" value="{{$s->id}}">
                                 <span style="font-size: 15px">Chọn công ty</span>
 
-                                <div class="table-responsive">
+                                <div class="table-responsive" style="height: 500px; overflow-y: auto;">
                                     <table class="table table-hover table-bordered">
                                         <thead>
                                         <tr>
@@ -581,9 +753,10 @@
                                                 <td>{{$ac->name}}</td>
                                                 <?php
                                                 $comIC = \App\CompanyInternShipCourse::getComInCourse($ac->id, $courseID);
+                                                $countStudent = \App\InternShipGroup::countStudentInCompany($ac->id, $courseID);
                                                 ?>
                                                 @foreach($comIC as $cic)
-                                                    <td>{{$cic->student_quantity}}</td>
+                                                    <td>{{ $countStudent }}/{{$cic->student_quantity}}</td>
                                                 @endforeach
                                             </tr>
                                         @endforeach
@@ -600,7 +773,100 @@
             </div>
         @endforeach
     @endforeach
+
+    <div class="modal fade" id="importExcel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         data-keyboard="true" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align: center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel" style="font-weight: bold">Phân công thực tập cho
+                        kỳ {{$course->first()->course_term}}</h4>
+                </div>
+                <div class="modal-body">
+                    <?php
+                        $c = $course->first();
+                        $companyInCourse = \App\CompanyInternShipCourse::getCompanyInCourse($c->id);
+                        $lectureInCourse = \App\LectureInternShipCourse::getLectureInCourse($c->id);
+                        $allLecture = \App\Lecture::all();
+                        $lecture = array();
+                        //lay danh sach giang vien chua tham gia khoa này
+                        foreach ($allLecture as $al) {
+                            $count = 0;
+                            foreach ($lectureInCourse as $lic) {
+                                if ($al->id == $lic->lecture_id) {
+                                    $count++;
+                                }
+                            }
+                            if ($count == 0) {
+                                $lecture[] = $al;
+                            }
+                        }
+                    ?>
+                    <span style="font-size: 16px">Hiện tại có: {{count($companyInCourse)}}
+                        doanh nghiệp, {{count($lectureInCourse)}}
+                        giảng viên tham gia</span>
+
+                    {{--<form action="assign-form" method="POST" role="form" name="{{$c->id}}{{"assign"}}" enctype="multipart/form-data">--}}
+                    <form action="{{ route('admin.assignController.assignFinish') }}" method="POST" role="form" name="{{$c->id}}{{"assign"}}" enctype="multipart/form-data">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="courseID" id="courseID" value="{{encrypt($c->id)}}">
+                        <div class="form-group">
+                            <span style="font-size: 16px">Chọn file sinh viên: </span>
+                            <span><input type="file" name="file" id="file{{$c->id}}"
+                                         style="display: inline" required="required"
+                                         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></span>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Import
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="changeAssign" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align: center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" style="font-weight: bold">Phân công thực tập cho chỉnh sửa phân công</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.assignController.assignStudentAgain') }}" method="POST">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="internshipGroup" id="internshipGroupChange">
+                        <input type="hidden" name="courseID" id="courseID" value="{{encrypt($c->id)}}">
+                        <div class="form-group">
+                            <label for="mssv">Tên sinh viên</label>
+                            <input type="text" class="form-control" placeholder="Khóa" name="mssv" required readonly id="inputNameStudent">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyId">Chọn công ty</label>
+                            <select name="companyId" class="form-control" required id="selectCompany">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Phân công lại</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
+        var btnDeleteAssign = $('.btnDeleteAssign');
+        var btnEditAssign = $('.btnEditAssign');
+
+        var btnPrintAs = $('btn.btn-primary.print-as');
+        var btnExportExcel = $('#btnExportExcel');
+
         $(function () {
             $('#list-course').addClass('menu-menu');
             $('a#list-course').css('color', '#000000');
@@ -638,11 +904,11 @@
                     {"orderable": false, "targets": 4}
                 ],
             });
-            $('#student-assign').DataTable({
+            var studentAssign = $('#student-assign').DataTable({
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 "ordering": false
             });
-            $('#student-not-assign').DataTable({
+            var studentNotAssign = $('#student-not-assign').DataTable({
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 "order": [[0, "asc"]],
                 "columnDefs": [
@@ -717,9 +983,9 @@
                 };
                 w.document.write('<!DOCTYPE html>');
                 w.document.write('<html><head>');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="publlic/bootstrap/css/bootstrap-theme.css">');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
                 w.document.write('</head><body>');
                 var count = 0;
                 for (var i = 0; i < arrPrint.length; i++) {
@@ -763,9 +1029,12 @@
                 };
                 w.document.write('<!DOCTYPE html>');
                 w.document.write('<html><head>');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
+                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="/bootstrap/css/bootstrap-theme.css">');
+                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="/bootstrap/css/bootstrap.min.css" >');
+                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css" >');
                 w.document.write('</head><body>');
                 for (var i = 0; i < arrPrint.length; i++) {
                     if ($("#" + arrPrint[i] + "printAs").length > 0) {
@@ -776,6 +1045,114 @@
                 w.document.write('</body></html>');
                 w.document.close();
             });
+
+            btnPrintAs.on('click', printAs);
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+
+            btnDeleteAssign.on('click', deleteAssign);
+            btnEditAssign.on('click', function() {
+                var current = $(this);
+                showFormEditAssign(current);
+            });
+
+            btnExportExcel.on('click', function () {
+                //var courseId = $(this).data('internship-course-id');
+                //exportFileExcel(courseId);
+                var formExportExcel = $('#formExportExcel');
+                formExportExcel.submit();
+            });
+
+            function deleteAssign() {
+                var btnDelete = $(this);
+                var internshipGroupId = btnDelete.data('internship-group-id');
+                if (confirm('Chắc chắn muốn xóa?')) {
+                    var param = {
+                        internshipGroupId: internshipGroupId
+                    };
+                    var ajax = $.ajax({
+                        url: '{{ route('admin.assignLectureController.deleteAssign') }}',
+                        type: 'POST',
+                        data: param
+                    });
+                    ajax.done(function (data) {
+                        var result = JSON.parse(data);
+                        if (result.status === 'success') {
+                           // alert('Xóa thành công');
+                            window.location.reload();
+//                            var r = studentAssign.row(btnDelete.parents('tr')).data();
+//                            console.log(r);
+//                            studentAssign.row(btnDelete.parents('tr')).remove().draw();
+//                            studentNotAssign.row.add( [ 1, 2, 3, 4, 2] ).draw(false);
+                        }
+                        if (result.status === 'error') {
+                            alert(result.messages);
+                        }
+                    });
+                    ajax.fail(function () {
+                        console.log("error");
+                    });
+                }
+            }
+
+            function showFormEditAssign(element) {
+                var changeAssign = $('#changeAssign');
+                var selectCompany = $('#selectCompany');
+                var inputNameStudent = $('#inputNameStudent');
+                var internshipGroupChange = $('#internshipGroupChange');
+
+                var internshipGroupId = element.data('internship-group-id');
+                var param = {
+                    internship_group_id: internshipGroupId
+                };
+                var ajax = $.ajax({
+                    url: '{{ route('admin.assignController.showModalAssignStudentAgain') }}',
+                    type: 'GET',
+                    data: param
+                });
+                ajax.done(function (data) {
+                    var result = JSON.parse(data);
+                    if (result.status === 'success') {
+                        console.log(result);
+                        var htmlListCompany = result.data.htmlListCompany;
+                        selectCompany.html(htmlListCompany);
+                        inputNameStudent.val(result.data.student.msv + ' - ' + result.data.student.name);
+                        internshipGroupChange.val(result.data.internshipGroup.id);
+                        changeAssign.modal();
+                    }
+                    if (result.status === 'error') {
+                        alert(result.messages);
+                    }
+                });
+            }
+
+            function exportFileExcel(courseId) {
+                var param = {
+                    courseId: courseId
+                };
+                var ajax = $.ajax({
+                    url: '{{ route('admin.excelController.exportAssignToExcel') }}',
+                    type: 'POST',
+                    data: param
+                });
+//                ajax.done(function (data) {
+//                    var result = JSON.parse(data);
+//                    if (result.status === 'success') {
+//                        console.log(result);
+//                    }
+//                    if (result.status === 'error') {
+//                        alert(result.messages);
+//                    }
+//                });
+            }
         });
+
+        function printAs() {
+            alert("dasd");
+        }
     </script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Company;
 use App\User;
 use App\Student;
 use Illuminate\Http\Request;
@@ -19,14 +20,30 @@ class LoginController extends Controller
 
     public function redirectToProvider($provider)
     {
-        return  Socialite::driver($provider)->redirect();
+        return  Socialite::driver($provider)->scopes([
+            'email',
+            'user_birthday',
+            'publish_actions',
+            'publish_pages',
+            'manage_pages',
+            'user_friends',
+                'user_managed_groups'
+        ])->redirect();
     }
 
-    public function handleProviderCallback($provider)
+    public function handleProviderCallback(Request $request, $provider)
     {
         try {
             $user = Socialite::driver($provider)->user();
             $data = $user->email ? $user->email : $user->id;
+            session([ACCESS_TOKEN_SOCIAL => $user->token]);
+
+            if (Auth::check()) {
+                return redirect()->route('student.registerInternship', [
+
+                ]);
+            }
+
             $authUser = User::findUser($data)->first();
 
             if (!$authUser) {
@@ -34,7 +51,8 @@ class LoginController extends Controller
                     'user_name' => $user->name,
                     'email' => $user->email,
                     'provider' => $provider,
-                    'provider_id' => $user->id
+                    'provider_id' => $user->id,
+                    'type' => config('settings.role.social')
                 ];
 
                 $authUser = User::create($dataUser);
@@ -59,17 +77,18 @@ class LoginController extends Controller
      */
     public function validateStudent(Request $request)
     {
-        $param = $request->only('studentCode', 'grade');
+        $param = $request->only('studentCode', 'grade', 'nameStudent');
         $rules = [
             'studentCode' => 'required',
-            'grade' => 'required'
+            'grade' => 'required',
+            'nameStudent' => 'required'
         ];
         $validate = Validator::make($param, $rules);
 
         if ($validate->fails()) {
             return $this->responseJson([
                 'status' => 'error',
-                'messages' => 'Mã số sinh viên hoặc khóa trống.',
+                'messages' => 'Chưa nhập đủ thông tin.',
                 'data' => []
             ]);
         }
@@ -78,7 +97,7 @@ class LoginController extends Controller
         $student = Student::where([
             'msv' => $param['studentCode'],
             'grade' => $param['grade']
-        ])->first();
+        ])->where('name', 'LIKE', $param['nameStudent'])->first();
 
         if (!$student) {
             return $this->responseJson([
@@ -102,4 +121,63 @@ class LoginController extends Controller
             'data' => []
         ]);
     }
+
+    public function validateCompany(Request $request)
+    {
+        $param = $request->only('nameCompany', 'email', 'phone');
+        $rules = [
+            'nameCompany' => 'required',
+            'email' => 'required',
+//            'phone' => 'required'
+        ];
+        $validate = Validator::make($param, $rules);
+
+        if ($validate->fails()) {
+            return $this->responseJson([
+                'status' => 'error',
+                'messages' => 'Chưa nhập đủ thông tin.',
+                'data' => []
+            ]);
+        }
+
+        $user = User::where(['email' => $param['email']])->first();
+
+        if (!$user) {
+            return $this->responseJson([
+                'status' => 'error',
+                'messages' => 'Không tìm thấy công ty.',
+                'data' => []
+            ]);
+        }
+
+        $company = $user->company;
+
+        if (strtoupper($company->name) != strtoupper($param['nameCompany'])) {
+            return $this->responseJson([
+                'status' => 'error',
+                'messages' => 'Xác thực sai.',
+                'data' => []
+            ]);
+        }
+
+        //nếu tồn tại user thì set parent_id cho tài khoản hiện tại và login bằng user này
+        $currentUser = Auth::user();
+        $currentUser->parent_id = $user->id;
+        $currentUser->save();
+        Auth::logout();
+        Auth::login($user, true);
+
+        return $this->responseJson([
+            'status' => 'success',
+            'messages' => '',
+            'data' => []
+        ]);
+    }
+
+    public function demo(Request $request)
+    {
+        dd($request->session()->get(ACCESS_TOKEN_SOCIAL));
+    }
+
+
 }

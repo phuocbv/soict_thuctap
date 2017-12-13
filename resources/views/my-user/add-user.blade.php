@@ -153,6 +153,14 @@
                                 <label>Tên công ty</label>
                                 <input type="text" name="nameCompany" id="nameCompany" class="form-control"
                                        required="required" placeholder="Nhập tên công ty">
+                                <br>
+                                <label>Giảng viên phụ trách</label>
+                                <select name="lectureId" required class="form-control">
+                                    <option value="">Chọn giảng viên</option>
+                                    @foreach($listLecture as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary" name="addOne">Thêm</button>
@@ -192,7 +200,7 @@
                             url: "check-email-lecture",
                             type: "POST",
                             data: {
-                                "_token": "{{ csrf_token() }}",
+                                "_token": "{{ csrf_token() }}"
                             }
                         }
                     },
@@ -203,7 +211,7 @@
                             url: "check-email-company",
                             type: "POST",
                             data: {
-                                "_token": "{{ csrf_token() }}",
+                                "_token": "{{ csrf_token() }}"
                             }
                         }
                     },
@@ -219,7 +227,7 @@
                             url: "check-username",
                             type: "POST",
                             data: {
-                                "_token": "{{ csrf_token() }}",
+                                "_token": "{{ csrf_token() }}"
                             }
                         }
                     },
@@ -241,10 +249,13 @@
                             url: "check-name-company",
                             type: "POST",
                             data: {
-                                "_token": "{{ csrf_token() }}",
+                                "_token": "{{ csrf_token() }}"
                             }
                         }
                     },
+                    lectureId: {
+                        required: true
+                    }
                 },
                 messages: {
                     password: {
@@ -290,6 +301,9 @@
                     nameCompany: {
                         remote: "Tên công ty đã tồn tại",
                         required: "vui lòng nhập tên công ty"
+                    },
+                    lectureId: {
+                        required: 'Chưa chọn giảng viên'
                     }
                 }
             });

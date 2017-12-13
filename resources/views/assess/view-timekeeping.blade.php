@@ -32,8 +32,9 @@
                     @endforeach
                 </div>
                 <div class="panel-body">
-                    <span class="company-register">Xem file chấm công</span>
-
+                    <div style="text-align: center; font-size: 20px">
+                        <span class="company-register"><b>BẢNG CHẤM CÔNG</b></span>
+                    </div>
                     <div class="row time-keeping">
                         <form action="timekeeping-post" method="POST" role="form">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -73,20 +74,20 @@
                                                     @if($i==2)
                                                         @if(($yearFromDate % 100 != 0) && ($yearFromDate % 4 == 0) || ($yearFromDate % 400 == 0))
                                                             <tr>
-                                                                <td>{{$as->name}}</td>
+                                                                <td style="width: 100px">{{$as->name}}</td>
                                                                 @for($j=1;$j<=29;$j++)
                                                                     <?php
                                                                     $checkDate = date('Y-m-d H:i:s', strtotime($yearFromDate . "-" . $i . "-" . $j))
                                                                     ?>
                                                                     @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                        <td>{{$j}}
+                                                                        <td><div>{{$j}}</div>
                                                                             <input type="checkbox" checked="checked"
                                                                                    name="workDay[]"
                                                                                    class="check-timekeeping"
                                                                                    value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
                                                                         </td>
                                                                     @else
-                                                                        <td>{{$j}}
+                                                                        <td><div>{{$j}}</div>
                                                                             <input type="checkbox"
                                                                                    name="workDay[]"
                                                                                    class="check-timekeeping"
@@ -129,14 +130,14 @@
                                                                 $checkDate = date('Y-m-d H:i:s', strtotime($yearFromDate . "-" . $i . "-" . $j));
                                                                 ?>
                                                                 @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox" checked="checked"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
                                                                     </td>
                                                                 @else
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
@@ -154,14 +155,14 @@
                                                                 $checkDate = date('Y-m-d H:i:s', strtotime($yearFromDate . "-" . $i . "-" . $j));
                                                                 ?>
                                                                 @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox" checked="checked"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
                                                                     </td>
                                                                 @else
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
@@ -218,14 +219,14 @@
                                                                     $checkDate = date('Y-m-d H:i:s', strtotime($yearFromDate . "-" . $i . "-" . $j));
                                                                     ?>
                                                                     @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                        <td>{{$j}}
+                                                                        <td><div>{{$j}}</div>
                                                                             <input type="checkbox" checked="checked"
                                                                                    name="workDay[]"
                                                                                    class="check-timekeeping"
                                                                                    value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
                                                                         </td>
                                                                     @else
-                                                                        <td>{{$j}}
+                                                                        <td><div>{{$j}}</div>
                                                                             <input type="checkbox"
                                                                                    name="workDay[]"
                                                                                    class="check-timekeeping"
@@ -244,14 +245,14 @@
                                                                 $checkDate = date('Y-m-d H:i:s', strtotime($yearFromDate . "-" . $i . "-" . $j));
                                                                 ?>
                                                                 @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox" checked="checked"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
                                                                     </td>
                                                                 @else
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
@@ -260,31 +261,31 @@
                                                                 @endif
                                                             @endfor
                                                         </tr>
-                                                        @if($i==4||$i==6||$i==9||$i==11)
-                                                            <tr>
-                                                                <td>{{$as->name}}</td>
-                                                                @for($j=1;$j<=30;$j++)
-                                                                    <?php
-                                                                    $checkDate = date('Y-m-d H:i:s', strtotime($yearFromDate . "-" . $i . "-" . $j));
-                                                                    ?>
-                                                                    @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                        <td>{{$j}}
-                                                                            <input type="checkbox" checked="checked"
-                                                                                   name="workDay[]"
-                                                                                   class="check-timekeeping"
-                                                                                   value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
-                                                                        </td>
-                                                                    @else
-                                                                        <td>{{$j}}
-                                                                            <input type="checkbox"
-                                                                                   name="workDay[]"
-                                                                                   class="check-timekeeping"
-                                                                                   value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
-                                                                        </td>
-                                                                    @endif
-                                                                @endfor
-                                                            </tr>
-                                                        @endif
+                                                    @endif
+                                                    @if($i==4||$i==6||$i==9||$i==11)
+                                                        <tr>
+                                                            <td>{{$as->name}}</td>
+                                                            @for($j=1;$j<=30;$j++)
+                                                                <?php
+                                                                $checkDate = date('Y-m-d H:i:s', strtotime($yearFromDate . "-" . $i . "-" . $j));
+                                                                ?>
+                                                                @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
+                                                                    <td><div>{{$j}}</div>
+                                                                        <input type="checkbox" checked="checked"
+                                                                               name="workDay[]"
+                                                                               class="check-timekeeping"
+                                                                               value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
+                                                                    </td>
+                                                                @else
+                                                                    <td><div>{{$j}}</div>
+                                                                        <input type="checkbox"
+                                                                               name="workDay[]"
+                                                                               class="check-timekeeping"
+                                                                               value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
+                                                                    </td>
+                                                                @endif
+                                                            @endfor
+                                                        </tr>
                                                     @endif
                                                 @endforeach
                                             @endforeach
@@ -299,9 +300,8 @@
                                                 $arrStudent = \App\Student::getStudentFollowID($ag->student_id);
                                                 ?>
                                                 @foreach($arrStudent as $as)
-
                                                     @if($i==2)
-                                                        @if(($yearToDate % 100 != 0) && ($$yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
+                                                        @if(($yearToDate % 100 != 0) && ($yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
                                                             <tr>
                                                                 <td>{{$as->name}}</td>
                                                                 @for($j=1;$j<=29;$j++)
@@ -333,14 +333,14 @@
                                                                     $checkDate = date('Y-m-d H:i:s', strtotime($yearToDate . "-" . $i . "-" . $j));
                                                                     ?>
                                                                     @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                        <td>{{$j}}
+                                                                            <td><div>{{$j}}</div>
                                                                             <input type="checkbox" checked="checked"
                                                                                    name="workDay[]"
                                                                                    class="check-timekeeping"
                                                                                    value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
                                                                         </td>
                                                                     @else
-                                                                        <td>{{$j}}
+                                                                        <td><div>{{$j}}</div>
                                                                             <input type="checkbox"
                                                                                    name="workDay[]"
                                                                                    class="check-timekeeping"
@@ -359,14 +359,14 @@
                                                                 $checkDate = date('Y-m-d H:i:s', strtotime($yearToDate . "-" . $i . "-" . $j));
                                                                 ?>
                                                                 @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox" checked="checked"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
                                                                     </td>
                                                                 @else
-                                                                    <td>{{$j}}
+                                                                    <td><div>{{$j}}</div>
                                                                         <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
@@ -375,31 +375,32 @@
                                                                 @endif
                                                             @endfor
                                                         </tr>
-                                                        @if($i==4||$i==6||$i==9||$i==11)
-                                                            <tr>
-                                                                <td>{{$as->name}}</td>
-                                                                @for($j=1;$j<=30;$j++)
-                                                                    <?php
-                                                                    $checkDate = date('Y-m-d H:i:s', strtotime($yearToDate . "-" . $i . "-" . $j));
-                                                                    ?>
-                                                                    @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
-                                                                        <td>{{$j}}
-                                                                            <input type="checkbox" checked="checked"
-                                                                                   name="workDay[]"
-                                                                                   class="check-timekeeping"
-                                                                                   value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
-                                                                        </td>
-                                                                    @else
-                                                                        <td>{{$j}}
-                                                                            <input type="checkbox"
-                                                                                   name="workDay[]"
-                                                                                   class="check-timekeeping"
-                                                                                   value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
-                                                                        </td>
-                                                                    @endif
-                                                                @endfor
-                                                            </tr>
-                                                        @endif
+
+                                                    @endif
+                                                    @if($i==4||$i==6||$i==9||$i==11)
+                                                        <tr>
+                                                            <td>{{$as->name}}</td>
+                                                            @for($j=1;$j<=30;$j++)
+                                                                <?php
+                                                                $checkDate = date('Y-m-d H:i:s', strtotime($yearToDate . "-" . $i . "-" . $j));
+                                                                ?>
+                                                                @if(\App\Timekeeping::check($as->id,$ag->internship_course_id,$ag->company_id,$checkDate))
+                                                                    <td><div>{{$j}}</div>
+                                                                        <input type="checkbox" checked="checked"
+                                                                               name="workDay[]"
+                                                                               class="check-timekeeping"
+                                                                               value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
+                                                                    </td>
+                                                                @else
+                                                                    <td><div>{{$j}}</div>
+                                                                        <input type="checkbox"
+                                                                               name="workDay[]"
+                                                                               class="check-timekeeping"
+                                                                               value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
+                                                                    </td>
+                                                                @endif
+                                                            @endfor
+                                                        </tr>
                                                     @endif
                                                 @endforeach
                                             @endforeach
@@ -413,9 +414,9 @@
                                      style="font-weight: bold;text-align: center">
                                     <span>XÁC NHẬN PHÍA CÔNG TY</span><br>
                                                 <span>
-                                                    @foreach($user as $u)
-                                                        {{$u->name}}
-                                                    @endforeach
+                                                    @if($user)
+                                                        {{$user->name}}
+                                                    @endif
                                                 </span>
                                 </div>
                             </div>
@@ -434,28 +435,46 @@
     <script>
         $('#company-join').addClass('menu-menu');
         $('a#company-join').css('color', '#000000');
-        $('.print-timekeeping').click(function () {
-            var groupID = $(this).attr('data-id');
-            var w = window.open('', 'printwindow');
-            w.document.open();
-            w.document.onreadystatechange = function () {
-                if (this.readyState === 'complete') {
-                    this.onreadystatechange = function () {
-                    };
-                    w.focus();
-                    w.print();
-                    w.close();
+        var btnPrintTimekeeping = $('.print-timekeeping');
+
+        $(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
-            };
-            w.document.write('<!DOCTYPE html>');
-            w.document.write('<html><head>');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
-            w.document.write('</head><body>');
-            w.document.write($("#timekeeping").html());
-            w.document.write('</body></html>');
-            w.document.close();
+            });
+
+            btnPrintTimekeeping.on('click', function () {
+                var current = $(this);
+                printTimekeeping(current);
+            });
         });
+
+        function printTimekeeping(element) {
+            var panel = element.parents('.panel.panel-default').find('.panel-body');
+            var row = element.parents('.row');
+            var param = {
+                content: panel.html().replace(row.html(), ''),
+                name: 'timekeeping'
+            };
+            console.log(panel.html().replace(row.html(), ''));
+
+            var ajax = $.ajax({
+                url: '{{ route('setDataPrint') }}',
+                type: 'POST',
+                data: param
+            });
+            ajax.done(function (data) {
+                var result = JSON.parse(data);
+                if (result.status === 'success') {
+                    window.location = '{{ route('printReport') }}?type=landscape';
+                } else if (result.status === 'error') {
+                    alert(result.messages);
+                }
+            });
+            ajax.fail(function () {
+                console.log("error");
+            });
+        }
     </script>
 @endsection

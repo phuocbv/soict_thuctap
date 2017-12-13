@@ -61,7 +61,8 @@ class AssessController extends Controller
             'courseJoin' => $courseJoin,
             'lectureID' => $lectureID,
             'user' => $lecture,
-            'type' => $type
+            'type' => $type,
+            'arrGroup' => []
         ]);
     }
 
@@ -186,25 +187,18 @@ class AssessController extends Controller
 
     public function companyTimeKeeping(Request $request)
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
 
-        $companySession = new  SessionController();
-        $company = Company::getCompany($companySession->getCompanySession());
+        $company = $this->currentUser()->company;
         $type = 'company';
+        $companyID = $company->id;
 
-        $companyID = $company->first()->id;
         $courseID = $request->input('courseID');
         $arrGroup = InternShipGroup::getGroupFollowCI($companyID, $courseID);
         $course = InternShipCourse::getInCourse($courseID);
+
         return view('assess.timekeeping')->with([
             'course' => $course,
             'arrGroup' => $arrGroup,
-            'notify' => $notify,
             'user' => $company,
             'type' => $type
         ]);
@@ -274,25 +268,15 @@ class AssessController extends Controller
 
     public function viewTimekeeping(Request $request)
     {
-        /*
-         * get newNotify
-         * get uniNotify
-         * get comNotify
-         */
-        $notify = News::getNotify();
-
-        $companySession = new SessionController();
-        $company = Company::getCompany($companySession->getCompanySession());
+        $company = $this->currentUser()->company;
         $type = 'company';
-
-        $companyID = $company->first()->id;
+        $companyID = $company->id;
         $courseID = $request->input('courseID');
         $arrGroup = InternShipGroup::getGroupFollowCI($companyID, $courseID);
         $course = InternShipCourse::getInCourse($courseID);
         return view('assess.view-timekeeping')->with([
             'course' => $course,
             'arrGroup' => $arrGroup,
-            'notify' => $notify,
             'user' => $company,
             'type' => $type
         ]);

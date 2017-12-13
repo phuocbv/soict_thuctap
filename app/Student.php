@@ -8,6 +8,8 @@ class Student extends Model
 {
     public $table = 'student';
 
+    protected $fillable = ['name', 'gender', 'grade', 'class', 'program_university', 'msv', 'user_id'];
+
     public function myUser()
     {
         return $this->belongsTo('App\MyUser', 'user_id');
@@ -119,8 +121,17 @@ class Student extends Model
 
     public static function getStudentIDFMsv($msv)
     {
-        $studentID = Student::where('msv', '=', $msv)->get()->first()->id;
+        $studentID = Student::where('msv', '=', $msv)->get();
+        if (count($studentID) > 0) {
+            $studentID = $studentID->first()->id;
+        }
         return $studentID;
+    }
+
+    public function scopeGetStudentByMSSV($mssv)
+    {
+        dd(Student::where('msv', '=', $mssv)->first());
+        return Student::where('msv', '=', $mssv)->first();
     }
 
     /**

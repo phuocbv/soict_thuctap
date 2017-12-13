@@ -8,6 +8,10 @@ class StudentTmp extends Model
 {
     public $table = "student_tmp";
 
+    protected $fillable = [
+        'msv', 'course_term', 'status', 'subject'
+    ];
+
     /**
      * insert new student_tmp
      *
@@ -65,7 +69,9 @@ class StudentTmp extends Model
     public static function deleteStudentTmp($id)
     {
         $find = StudentTmp::find($id);
-        $find->delete();
+        if ($find) {
+            $find->delete();
+        }
     }
 
 

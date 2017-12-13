@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Socialite;
 use Validator;
@@ -75,5 +76,13 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         return view('user-login');
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget(ACCESS_TOKEN_SOCIAL);
+        Auth::guard($this->getGuard())->logout();
+
+        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
     }
 }

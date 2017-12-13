@@ -8,6 +8,8 @@ class InternShipGroup extends Model
 {
     public $table = 'internship_group';
 
+    protected $fillable = ['student_id', 'company_id', 'lecture_id', 'internship_course_id'];
+
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');

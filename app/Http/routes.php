@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Response;
 /*
  * route process link some page general
  */
+Route::get('/demo', 'Auth\LoginController@demo');
 Route::get('/', 'HomeRootController@home');
 Route::get('test1', function () {
     return view('test1');
@@ -28,6 +29,7 @@ Route::get('login', function () {
     return view('user-login');
 });
 Route::get('detail-notify', 'HomeRootController@detailNotify');
+Route::get('showNotify', 'HomeRootController@showNotify');
 Route::post('login', 'MyUserController@login');
 /*
  * route process reset password
@@ -44,7 +46,10 @@ Route::group(['middleware' => 'Student'], function () {
     Route::get('user-student-home', 'HomeUserController@userComplex');
     Route::get('student-profile', 'Profile\StudentProfileController@studentProfile');
     Route::post('edit-student-profile', 'Profile\StudentProfileController@editProfile');
-    Route::get('register-intern', 'Course\StudentRegisterController@registerInternship');
+    Route::get('register-intern', [
+        'uses' => 'Course\StudentRegisterController@registerInternship',
+        'as' => 'student.registerInternship'
+    ]);
     Route::get('student-register', 'Course\StudentRegisterController@studentRegister');
     Route::get('course-join', 'Course\StudentRegisterController@courseJoin');
     Route::post('upload-report', 'Course\StudentRegisterController@uploadReport');
@@ -206,6 +211,62 @@ Route::group(['middleware' => 'Admin'], function () {
     Route::post('delete-academy', 'MyFunctionController@deleteAcademy');
     Route::post('delete-many-learn', 'MyFunctionController@deleteMany');
     Route::post('delete-many-academy', 'MyFunctionController@deleteMany');
+    Route::post('addAssignStudent', [
+        'uses' => 'Course\AssignController@addAssignStudent',
+        'as' => 'admin.assignController.addAssignStudent'
+    ]);
+    Route::get('showListInternship', [
+        'uses' => 'Course\AssignLectureController@showListInternship',
+        'as' => 'admin.assignLectureController.showListInternship'
+    ]);
+
+    Route::post('assignLectureToCompany', [
+        'uses' => 'Course\AssignLectureController@assignLectureToCompany',
+        'as' => 'admin.assignLectureController.assignLectureToCompany'
+    ]);
+    Route::post('assignLecture', [
+        'uses' => 'Course\AssignLectureController@assignLecture',
+        'as' => 'admin.assignLectureController.assignLecture'
+    ]);
+    Route::post('deleteAssign', [
+        'uses' => 'Course\AssignLectureController@deleteAssign',
+        'as' => 'admin.assignLectureController.deleteAssign'
+    ]);
+    Route::post('deleteLectureAssignCompany', [
+        'uses' => 'Course\AssignLectureController@deleteLectureAssignCompany',
+        'as' => 'admin.assignLectureController.deleteLectureAssignCompany'
+    ]);
+
+    Route::post('assignFinish', [
+        'uses' => 'Course\AssignController@assignFinish',
+        'as' => 'admin.assignController.assignFinish'
+    ]);
+
+    Route::get('showModalAssignStudentAgain', [
+        'uses' => 'Course\AssignController@showModalAssignStudentAgain',
+        'as' => 'admin.assignController.showModalAssignStudentAgain'
+    ]);
+
+    Route::post('assignStudentAgain', [
+        'uses' => 'Course\AssignController@assignStudentAgain',
+        'as' => 'admin.assignController.assignStudentAgain'
+    ]);
+
+
+
+    //export excel
+    Route::post('exportAssignToExcel', [
+        'uses' => 'ExcelController@exportAssignToExcel',
+        'as' => 'admin.excelController.exportAssignToExcel'
+    ]);
+
+
+    //lecture in course
+    Route::get('showListLectureManageStudent', [
+        'uses' => 'Course\LectureInCourseController@showListLectureManageStudent',
+        'as' => 'admin.lectureInCourseController.showListLectureManageStudent'
+    ]);
+
     /*
      * doan nay xu ly ajax
      */
@@ -334,8 +395,15 @@ Route::get('chia', function () {
 //    $myUser->save();
 //});
 Route::get('report-demo', function () {
-    return view('reports.index');
+    //return view('reports.index');
+    return view('reports.report-of-lecture');
 });
+
+Route::get('demoPrint', [
+    'as' => 'demoPrint',
+    'uses' => 'PrintController@demoPrint'
+]);
+
 
 Route::get('auth/{provider}', [
     'as' => 'provider.redirect',
@@ -357,4 +425,29 @@ Route::get('/home', [
 Route::post('validateStudent', [
     'as' => 'validateStudent',
     'uses' => 'Auth\LoginController@validateStudent'
+]);
+Route::get('getListCompany', 'HomeRootController@getListCompany');
+Route::get('showInformationCompany', [
+    'uses' =>'HomeUserController@showDetailCompany',
+    'as' => 'showInformationCompany'
+]);
+Route::post('validateCompany', [
+    'as' => 'validateCompany',
+    'uses' => 'Auth\LoginController@validateCompany'
+]);
+
+//print
+Route::get('printReport', [
+   'uses' => 'PrintController@printReport',
+    'as' => 'printReport'
+]);
+
+Route::post('setDataPrint', [
+    'uses' => 'PrintController@setDataPrint',
+    'as' => 'setDataPrint'
+]);
+
+Route::get('printLectureInCourse', [
+    'uses' => 'PrintController@printLectureInCourse',
+    'as' => 'print.printLectureInCourse'
 ]);
