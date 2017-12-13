@@ -25,7 +25,7 @@ class InternShipCourse extends Model
 
     public function internShipGroup()
     {
-        return $this->hasMany('InternShipGroup', 'internship_course_id');
+        return $this->hasMany(InternShipGroup::class, 'internship_course_id');
     }
 
     public static function allCourse()
@@ -161,7 +161,7 @@ class InternShipCourse extends Model
     public static function updateStatus($courseID)
     {
         $internshipCourse = InternShipCourse::find($courseID);
-        $internshipCourse->status = 'đã phân công';
+        $internshipCourse->status = 'Đã phân công';
         $internshipCourse->save();
     }
 

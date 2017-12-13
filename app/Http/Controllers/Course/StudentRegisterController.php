@@ -149,25 +149,17 @@ class StudentRegisterController extends Controller
         $companyID = decrypt($request->input('companyID'));
         $internShipCourseID = decrypt($request->input('courseID'));
 
-        /*
-         * get studentID
-         */
+        //get studentID
         $student = $this->currentUser()->student;
         $studentID = $student->id;
 
-        /*
-         * lay gioi han dang ky vao mot cong ty
-         */
+        //lay gioi han dang ky vao mot cong ty
         $comIn = CompanyInternShipCourse::getComInCourse($companyID, $internShipCourseID)->first();
         $studentQuantity = $comIn->student_quantity;
-//        foreach ($comIn as $ci) {
-//            $studentQuantity = $ci->student_quantity;
-//        }
 
-        /*
-         * dem so luong sinh vien da dang ky vao mot cong ty
-         */
+        //dem so luong sinh vien da dang ky vao mot cong ty
         $countStudent = InternShipGroup::countStudentInCompany($companyID, $internShipCourseID);
+
         //check full student in company
         if (!CompanyInternShipCourse::checkRegisterFull($countStudent, $studentQuantity)) {
             $countCheck = count(InternShipGroup::getGroupFollowSI($studentID, $internShipCourseID));
@@ -200,7 +192,7 @@ class StudentRegisterController extends Controller
                     ]);
                 }
 
-                $this->postInGroup($comIn, $student, null, 'create', $accessToken);
+               $this->postInGroup($comIn, $student, null, 'create', $accessToken);
 
                 StudentInternShipCourse::insertSIC($studentID, $internShipCourseID);
                 InternShipGroup::insertGroup($studentID, $internShipCourseID, $companyID);
@@ -235,13 +227,21 @@ class StudentRegisterController extends Controller
 
         try {
             // Returns a `Facebook\FacebookResponse` object
-            $response = $facebook->post(
-                config('settings.groupID') . '/feed',
+//            $response = $facebook->post(
+//                config('settings.groupID') . '/feed',
+//                [
+//                    'message' => 'test app'
+//                ],
+//                $accessToken
+//            );
+
+            $response = $facebook->post("/me/feed",
                 [
-                    'message' => 'test app'
+                    'message' => "Hi"
                 ],
                 $accessToken
             );
+
         } catch(\Facebook\Exceptions\FacebookResponseException $e) {
             echo 'Graph returned an error: ' . $e->getMessage();
             exit;
@@ -250,10 +250,10 @@ class StudentRegisterController extends Controller
             exit;
         }
         $graphNode = $response->getGraphNode();
-        //dd($graphNode);
-        if ($action == 'create') {
-
-        }
+        dd($graphNode);
+//        if ($action == 'create') {
+//
+//        }
     }
 
 
@@ -263,9 +263,7 @@ class StudentRegisterController extends Controller
         $type = 'student';
         $studentID = $student->id;
 
-        /*
-         * lay khoa thuc tap ma sinh vien tham gia
-         */
+        //lay khoa thuc tap ma sinh vien tham gia
         $InCourseJoin = StudentInternShipCourse::getSIC($studentID);
 
         /*

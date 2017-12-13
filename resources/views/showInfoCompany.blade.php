@@ -92,7 +92,7 @@
             </a>
         </div>
         <div class="panel-body body-padding">
-            <div class="fb-comments" data-href="{{ route('showInformationCompany', ['company' => $company->id]) }}" data-numposts="5" width="800"></div>
+            <div class="fb-comments" data-href="{{ route('showInformationCompany', ['company' => encrypt($company->id)]) }}" data-numposts="5" width="800"></div>
         </div>
     </div>
     <div id="fb-root"></div>

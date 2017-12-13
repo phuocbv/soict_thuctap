@@ -11,6 +11,7 @@ use App\Http\Controllers\SessionController;
 use App\InternShipCourse;
 use App\InternShipGroup;
 use App\Lecture;
+use App\LectureAssignCompany;
 use App\LectureInternShipCourse;
 use App\LectureReport;
 use App\MyUser;
@@ -199,11 +200,11 @@ class ManageInCourseController extends Controller
          *danh sách giảng viên, danh sách sinh viên
          */
         $allLecture = Lecture::allLecture();
-        $allCompany = Company::allCompany();
+        //$allCompany = Company::allCompany();
         if (count(PlanLearning::getPlan($year)) > 0) {
             return view('manage-internship-course.create-course')->with([
                 'lecture' => $allLecture,
-                'company' => $allCompany,
+                //'company' => $allCompany,
                 'year' => $year,
                 //'notify' => $notify,
                 'user' => $admin,
@@ -247,17 +248,29 @@ class ManageInCourseController extends Controller
     public function createCourseForm(Request $request)
     {
         $getTerm = (int)($request->input('term'));
-        $choseLecture = $request->input('choseLecture');
-        $allCompany = Company::allCompany();
-        if ($getTerm == "" || count($choseLecture) == 0) {
+        //$choseLecture = $request->input('choseLecture');
+/*
+        //chọn all giảng viên
+        $choseLecture = Lecture::all('id');
+
+        //lấy danh sách những bản ghi có phân công công ty cho giảng viên
+        $listCompany = LectureAssignCompany::whereIn('lecture_id', $choseLecture->lists('id')->toArray())->get();
+        $allCompany = collect();
+
+        //chỉ lấy những công ti thuộc giảng viên mà có tham gia phụ trách
+        $listCompany->each(function ($value, $key) use ($allCompany) {
+            $allCompany->push($value->company);
+        });*/
+
+        //$allCompany = $allCompany->unique();
+
+        if ($getTerm == "") {
             $errorEmptyTerm = "";
             $errorEmptyLecture = "";
             if ($getTerm == "") {
                 $errorEmptyTerm = "chưa chọn khóa học";
             }
-            if (count($choseLecture) == 0) {
-                $errorEmptyLecture = "chưa chọn giáo viên";
-            }
+
             return redirect()->back()->with([
                 'errorEmptyTerm' => $errorEmptyTerm,
                 'errorEmptyLecture' => $errorEmptyLecture
@@ -292,20 +305,6 @@ class ManageInCourseController extends Controller
                 $toDate = date('Y-m-d H:i:s', strtotime($request->input('finishTerm')));
                 InternShipCourse::insertInternShipCourse($name, $getTerm, $status, $fromDate, $toDate, $planID);
                 $internShipCourse = InternShipCourse::getInternShipCourse($getTerm);
-                $internShipCourseID = "";
-                foreach ($internShipCourse as $i) {
-                    $internShipCourseID = $i->id;
-                }
-                foreach ($choseLecture as $cl) {
-                    if (LectureInternShipCourse::checkLectureInternShipCourse($cl, $internShipCourseID)) {
-                        LectureInternShipCourse::insertLectureInternShipCourse($cl, $internShipCourseID);
-                    }
-                }
-                foreach ($allCompany as $alc) {
-                    if (CompanyInternShipCourse::checkCompanyInternShipCourse($alc->id, $internShipCourseID)) {
-                        CompanyInternShipCourse::insertCompanyInternShipCourse($alc->id, $internShipCourseID, $alc->count_student_default);
-                    }
-                }
                 $success = 'Tạo thành công khóa thưc tập kỳ ' . $getTerm;
                 return redirect('list-course')->with('createSuccessCourse', $success);
             } else {
@@ -328,36 +327,22 @@ class ManageInCourseController extends Controller
 
     public function courseDetail(Request $request)
     {
-        /*
-       * get newNotify
-       * get uniNotify
-       * get comNotify
-       */
-        $notify = News::getNotify();
         $admin = Auth::user()->admin;
         $type = 'admin';
 
         $courseID = $request->input('id');
         $nowDate = date('Y-m-d');
-        /*
-         * lay khoa thuc tap
-         */
+
+        //lay khoa thuc tap
         $course = InternShipCourse::getInCourse($courseID);
-        /*
-         * lay danh sach sinh vien tham gia khoa thuc tap
-         */
+
+        //lay danh sach sinh vien tham gia khoa thuc tap
         $studentInCourse = StudentInternShipCourse::getSICFCourseID($courseID);
-//        $arrStudent = array();
-//        foreach ($studentInCourse as $sic) {
-//            $student = Student::getStudentFollowID($sic->student_id);
-//            foreach ($student as $s) {
-//                $arrStudent[] = $s;
-//            }
-//        }
-        /*
-         * lay danh sach cong ty tham gia khoa thuc tap
-         */
+
+        //lay danh sach cong ty tham gia khoa thuc tap (chi có tham gia mới có trong bảng này)
         $companyInCourse = CompanyInternShipCourse::getCompanyInCourse($courseID);
+        //dd($companyInCourse->count());
+
         $arrCompany = array();
         foreach ($companyInCourse as $cic) {
             $company = Company::getCompanyFollowID($cic->company_id);
@@ -365,9 +350,8 @@ class ManageInCourseController extends Controller
                 $arrCompany[] = $c;
             }
         }
-        /*
-         * lay danh sach giang vien tham gia khoa thuc tap
-         */
+
+        //lay danh sach giang vien tham gia khoa thuc tap
         $lectureInCourse = LectureInternShipCourse::getLectureInCourse($courseID);
         $arrLecture = array();
         foreach ($lectureInCourse as $lic) {
@@ -403,7 +387,6 @@ class ManageInCourseController extends Controller
             'arrAssign' => $arrAssign,
             'arrStudentQue' => $arrStudentQue,
             'arrStudentDanger' => $arrStudentDanger,
-            'notify' => $notify,
             'user' => $admin,
             'type' => $type,
             'nowDate' => $nowDate
@@ -642,6 +625,17 @@ class ManageInCourseController extends Controller
         foreach ($course as $c) {
             $status = $c->status;
         }
+        //thay đổi giảng viên trong bảng phân công
+        $listLectureAssignComapny = LectureAssignCompany::where([
+            'internship_course_id' => $courseID,
+            'lecture_id' => $lectureIDOld
+        ])->get();
+
+        foreach ($listLectureAssignComapny as $item) {
+            $item->lecture_id = $lectureIDNew;
+            $item->save();
+        }
+
         if ($status == "chưa phân công") {
             LectureInternShipCourse::deleteFLectureIDCourseID($lectureIDOld, $courseID);
             if (LectureInternShipCourse::checkLectureInternShipCourse($lectureIDNew, $courseID)) {

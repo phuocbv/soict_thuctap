@@ -15,7 +15,7 @@ class LectureAssignCompany extends Model
     public $table = 'lecture_assign_company';
 
     protected $fillable = [
-        'lecture_id', 'company_id'
+        'lecture_id', 'company_id', 'internship_course_id', 'price'
     ];
 
     public function lecture()
@@ -26,5 +26,10 @@ class LectureAssignCompany extends Model
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function internshipCourse()
+    {
+        return $this->belongsTo(InternShipCourse::class,'internship_course_id');
     }
 }

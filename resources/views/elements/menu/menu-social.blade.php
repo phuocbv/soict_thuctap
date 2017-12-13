@@ -95,11 +95,11 @@
                     <input type="text" class="form-control" id="email"
                            placeholder="Email" name="email" required>
                 </div>
-                <div class="form-group">
-                    <label for="phone">Số điện thoại</label>
-                    <input type="text" class="form-control" id="phone"
-                           placeholder="Khóa" name="phone" required>
-                </div>
+                {{--<div class="form-group">--}}
+                    {{--<label for="phone">Số điện thoại</label>--}}
+                    {{--<input type="text" class="form-control" id="phone"--}}
+                           {{--placeholder="Khóa" name="phone" required>--}}
+                {{--</div>--}}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
@@ -189,16 +189,16 @@
             return;
         }
 
-        if (phone.val() === '' || email.val() === undefined) {
-            alert('Điện thoại trống');
-            return;
-        }
+//        if (phone.val() === '' || email.val() === undefined) {
+//            alert('Điện thoại trống');
+//            return;
+//        }
 
         var data = {
             nameCompany: nameCompany.val(),
             email: email.val(),
-            phone: phone.val()
-        }
+            //phone: phone.val()
+        };
 
         postValidateCompany(data);
     }

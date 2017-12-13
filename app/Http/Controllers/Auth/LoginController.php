@@ -39,7 +39,9 @@ class LoginController extends Controller
             session([ACCESS_TOKEN_SOCIAL => $user->token]);
 
             if (Auth::check()) {
-                return redirect()->route('student.registerInternship');
+                return redirect()->route('student.registerInternship', [
+
+                ]);
             }
 
             $authUser = User::findUser($data)->first();
@@ -49,7 +51,8 @@ class LoginController extends Controller
                     'user_name' => $user->name,
                     'email' => $user->email,
                     'provider' => $provider,
-                    'provider_id' => $user->id
+                    'provider_id' => $user->id,
+                    'type' => config('settings.role.social')
                 ];
 
                 $authUser = User::create($dataUser);
@@ -77,7 +80,8 @@ class LoginController extends Controller
         $param = $request->only('studentCode', 'grade', 'nameStudent');
         $rules = [
             'studentCode' => 'required',
-            'grade' => 'required'
+            'grade' => 'required',
+            'nameStudent' => 'required'
         ];
         $validate = Validator::make($param, $rules);
 
@@ -124,7 +128,7 @@ class LoginController extends Controller
         $rules = [
             'nameCompany' => 'required',
             'email' => 'required',
-            'phone' => 'required'
+//            'phone' => 'required'
         ];
         $validate = Validator::make($param, $rules);
 
@@ -136,13 +140,9 @@ class LoginController extends Controller
             ]);
         }
 
-        $company = Company::where([
-            'name' => $param['nameCompany'],
-            'hr_mail' => $param['email'],
-            'hr_phone' => $param['phone']
-        ])->first();
+        $user = User::where(['email' => $param['email']])->first();
 
-        if (!$company) {
+        if (!$user) {
             return $this->responseJson([
                 'status' => 'error',
                 'messages' => 'Không tìm thấy công ty.',
@@ -150,8 +150,17 @@ class LoginController extends Controller
             ]);
         }
 
+        $company = $user->company;
+
+        if (strtoupper($company->name) != strtoupper($param['nameCompany'])) {
+            return $this->responseJson([
+                'status' => 'error',
+                'messages' => 'Xác thực sai.',
+                'data' => []
+            ]);
+        }
+
         //nếu tồn tại user thì set parent_id cho tài khoản hiện tại và login bằng user này
-        $user = $company->user;
         $currentUser = Auth::user();
         $currentUser->parent_id = $user->id;
         $currentUser->save();

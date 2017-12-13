@@ -129,7 +129,7 @@
                     <span style="font-weight: normal;color:#FFFFFF;float: right">
                         @if (Auth::check())
                             @php
-                                $name = ($type == config('settings.role.social')) ?
+                                    $name = ($type == config('settings.role.social')) ?
                                     Auth::user()->user_name : $user->name;
                             @endphp
                             {{ substr($name, 0, 30) }}

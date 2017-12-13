@@ -10,6 +10,7 @@
                     <th style="min-width: 14px"><input type="checkbox" name="selectAllLecture" class="selectAllLecture"></th>
                     <th style="min-width: 127px">Họ và tên giảng viên</th>
                     <th style="min-width: 128px">Xem nhận xét chung</th>
+                    <th style="min-width: 128px"></th>
                 </tr>
                 </thead>
                 <tfoot>
@@ -22,6 +23,7 @@
                             <span class="glyphicon glyphicon-print"></span>
                         </a>
                     </th>
+                    <th style="min-width: 128px"></th>
                 </tr>
                 </tfoot>
                 <tbody>
@@ -51,6 +53,13 @@
                         @else
                             <td></td>
                         @endif
+                        <td>
+                            <a href="javascript:void(0)"
+                                class="btn btn-success btn-sm error-edit-time commentOfLecture"
+                                data-lecture-in-course="{{ $lic->id }}">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -212,6 +221,22 @@
         @endforeach
     @endforeach
 </div>
+
+<div class="modal fade" role="dialog" id="lectureInCourse">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="text-align: center">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" style="font-weight: bold">Phân công thực tập cho chỉnh sửa phân công</h4>
+            </div>
+            <div class="modal-body">
+                <div id="showLectureInCourse"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $('.print-assess').click(function () {
         //var licID = $(this).attr('data-id');
@@ -314,4 +339,77 @@
         w.document.write('</body></html>');
         w.document.close();
     });
+
+    var commentOfLecture = $('.btn.commentOfLecture');
+    var lectureInCourse = $('#lectureInCourse');
+    var showLectureInCourse = $('#showLectureInCourse');
+
+    $(function () {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+        commentOfLecture.on('click', function () {
+            var lectureInCourseId = $(this).data('lecture-in-course');
+            showListLectureManageStudent(lectureInCourseId);
+        });
+
+        $('#lectureInCourse').on('click', '.print-lecture-in-course', function () {
+            var current = $(this);
+            var param = {
+                lectureId: current.data('lecture-id'),
+                internshipCourseId: current.data('internship-course-id'),
+                courseTerm: current.data('course-term'),
+                companyId: current.data('company-id')
+            };
+            console.log(param);
+            printLectureInCourse(param);
+        });
+    });
+
+    function showListLectureManageStudent(lectureInCourseId) {
+        var ajax = $.ajax({
+            url: '{{ route('admin.lectureInCourseController.showListLectureManageStudent') }}',
+            type: 'GET',
+            data: {lectureInCourseId: lectureInCourseId},
+        });
+        ajax.done(function(data) {
+            console.log(data);
+            showLectureInCourse.html(data);
+            lectureInCourse.modal();
+        })
+        .fail(function() {
+            console.log("error");
+        })
+        .always(function() {
+            console.log("complete");
+        });
+    }
+
+    function printLectureInCourse(param) {
+        var ajax = $.ajax({
+            url: '{{ route('setDataPrint') }}',
+            type: 'POST',
+            data: {
+                content: param,
+                name: 'lectureInCourse'
+            }
+        });
+        ajax.done(function(data) {
+            var result = JSON.parse(data);
+            if (result.status === 'success') {
+                window.location.href = '{{ route('print.printLectureInCourse') }}';
+            }
+            if (result.status === 'error') {
+                alert(result.messages);
+            }
+        })
+        .fail(function() {
+            console.log("error");
+        })
+        .always(function() {
+            console.log("complete");
+        });
+    }
 </script>

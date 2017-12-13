@@ -237,6 +237,35 @@ Route::group(['middleware' => 'Admin'], function () {
         'as' => 'admin.assignLectureController.deleteLectureAssignCompany'
     ]);
 
+    Route::post('assignFinish', [
+        'uses' => 'Course\AssignController@assignFinish',
+        'as' => 'admin.assignController.assignFinish'
+    ]);
+
+    Route::get('showModalAssignStudentAgain', [
+        'uses' => 'Course\AssignController@showModalAssignStudentAgain',
+        'as' => 'admin.assignController.showModalAssignStudentAgain'
+    ]);
+
+    Route::post('assignStudentAgain', [
+        'uses' => 'Course\AssignController@assignStudentAgain',
+        'as' => 'admin.assignController.assignStudentAgain'
+    ]);
+
+
+
+    //export excel
+    Route::post('exportAssignToExcel', [
+        'uses' => 'ExcelController@exportAssignToExcel',
+        'as' => 'admin.excelController.exportAssignToExcel'
+    ]);
+
+
+    //lecture in course
+    Route::get('showListLectureManageStudent', [
+        'uses' => 'Course\LectureInCourseController@showListLectureManageStudent',
+        'as' => 'admin.lectureInCourseController.showListLectureManageStudent'
+    ]);
 
     /*
      * doan nay xu ly ajax
@@ -366,8 +395,15 @@ Route::get('chia', function () {
 //    $myUser->save();
 //});
 Route::get('report-demo', function () {
-    return view('reports.index');
+    //return view('reports.index');
+    return view('reports.report-of-lecture');
 });
+
+Route::get('demoPrint', [
+    'as' => 'demoPrint',
+    'uses' => 'PrintController@demoPrint'
+]);
+
 
 Route::get('auth/{provider}', [
     'as' => 'provider.redirect',
@@ -398,4 +434,20 @@ Route::get('showInformationCompany', [
 Route::post('validateCompany', [
     'as' => 'validateCompany',
     'uses' => 'Auth\LoginController@validateCompany'
+]);
+
+//print
+Route::get('printReport', [
+   'uses' => 'PrintController@printReport',
+    'as' => 'printReport'
+]);
+
+Route::post('setDataPrint', [
+    'uses' => 'PrintController@setDataPrint',
+    'as' => 'setDataPrint'
+]);
+
+Route::get('printLectureInCourse', [
+    'uses' => 'PrintController@printLectureInCourse',
+    'as' => 'print.printLectureInCourse'
 ]);

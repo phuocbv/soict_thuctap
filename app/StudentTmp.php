@@ -69,7 +69,9 @@ class StudentTmp extends Model
     public static function deleteStudentTmp($id)
     {
         $find = StudentTmp::find($id);
-        $find->delete();
+        if ($find) {
+            $find->delete();
+        }
     }
 
 

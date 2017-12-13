@@ -8,6 +8,8 @@ class StudentInternShipCourse extends Model
 {
     public $table = 'student_internship_course';
 
+    protected $fillable = ['student_id', 'internship_course_id', 'subject', 'class_code'];
+
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
@@ -46,11 +48,17 @@ class StudentInternShipCourse extends Model
      */
     public static function insertSICHasSubject($studentID, $internShipCourseID, $subject)
     {
-        $sic = new StudentInternShipCourse();
-        $sic->student_id = $studentID;
-        $sic->internship_course_id = $internShipCourseID;
-        $sic->subject = $subject;
-        $sic->save();
+        $studentISC = StudentInternShipCourse::where([
+            'student_id' => $studentID,
+            'internship_course_id' => $internShipCourseID
+        ])->first();
+        if (!$studentISC) {
+            $sic = new StudentInternShipCourse();
+            $sic->student_id = $studentID;
+            $sic->internship_course_id = $internShipCourseID;
+            $sic->subject = $subject;
+            $sic->save();
+        }
     }
 
     /**

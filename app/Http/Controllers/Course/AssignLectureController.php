@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Course;
 
 
 use App\Company;
+use App\CompanyInternShipCourse;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FileController;
 use App\InternShipGroup;
@@ -43,17 +44,19 @@ class AssignLectureController extends Controller
         });
         //$list = LectureInternShipCourse::all();
         $listLecture = Lecture::all();
+        $listCourse = InternShipCourse::orderBy('course_term', 'DESC')->get();
 
         return view('manage-internship-course.list-course-assign-lecture')->with([
             'user' => $admin,
             'type' => $type,
             'listAssignLecture' => $listAssignLecture,
             'listCompany' => $list,
-            'listLecture' => $listLecture
+            'listLecture' => $listLecture,
+            'listCourse' => $listCourse,
         ]);
     }
 
-    public function assignLectureToCompany(Request $request)
+   /* public function assignLectureToCompany(Request $request)
     {
         $file = $request->file('file');
 
@@ -103,6 +106,142 @@ class AssignLectureController extends Controller
                     'lecture_id' => $userLecture->lecture->id,
                     'company_id' => $userCompany->company->id
                 ]);
+            }
+        }
+
+        return redirect()->back()->with([
+            'flash_message' => 'Phân công thành công',
+            'flash_level' => 'success',
+        ]);
+    }*/
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function assignLectureToCompany(Request $request)
+    {
+
+        $file = $request->file('file');
+
+        //đọc file excel
+        $listLectureAssignCompany = collect();
+        if (FileController::checkExtension($file)) {
+            Excel::load($file, function ($reader) use ($listLectureAssignCompany){
+                $reader->each(function ($sheet) use ($listLectureAssignCompany){
+                    $allRow = $sheet->all();
+                    if (count($allRow) > 0) {
+                        $sheet->first();
+                        $sheet->each(function ($row) use ($listLectureAssignCompany){
+                            $row = $row->toArray();
+                            $rules = array(
+                                'email_lecture' => 'required',
+                                'name_lecture' => 'required',
+                                'email_company' => 'required',
+                                'name_company' => 'required',
+                                'count_student_default' => 'required'
+                            );
+                            $validator = Validator::make($row, $rules);
+                            if (!$validator->fails()) {
+                                $listLectureAssignCompany->push($row);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        $param = $request->only('courseId');
+
+        //insert từng bản ghi vào trong database
+        foreach ($listLectureAssignCompany as $item) {
+            $userLecture = User::getByInput([
+                'email' => $item['email_lecture'],
+                'type' => config('settings.role.lecture')
+            ])->first();
+            //nếu chưa tồn tại thì tạo mới
+            if (!$userLecture) {
+                //tao tai khoan giảng viên trong bang users
+                $userLecture = User::create([
+                    'user_name' => $item['email_lecture'],
+                    'email' => $item['email_lecture'],
+                    'type' => config('settings.role.lecture'),
+                    'password' => bcrypt($item['email_lecture'])
+                ]);
+
+                //lưu thông tin giảng vien trong table lecture
+                Lecture::create([
+                    'name' => $item['name_lecture'],
+                    'user_id' => $userLecture['id']
+                ]);
+            }
+
+            //cho giang vien tham gia
+            if (LectureInternShipCourse::checkLectureInternShipCourse($userLecture->lecture->id, $param['courseId'])) {
+                LectureInternShipCourse::insertLectureInternShipCourse($userLecture->lecture->id, $param['courseId']);
+            }
+
+            //lấy user la công ty
+            $userCompany = User::getByInput([
+                'email' => $item['email_company'],
+                'type' => config('settings.role.company')
+            ])->first();
+
+            //check company ton tai
+            if (!$userCompany) {
+                //tao tai khoan trong bang users
+                $userCompany = User::create([
+                    'user_name' => $item['email_company'],
+                    'email' => $item['email_company'],
+                    'type' => config('settings.role.company'),
+                    'password' => bcrypt($item['email_company'])
+                ]);
+                //tao tai khoan trong bang table company
+                Company::create([
+                    'name' => $item['name_company'],
+                    'hr_name' => $item['hr_name'],
+                    'hr_mail' => $item['hr_mail'],
+                    'hr_phone' => $item['hr_phone'],
+                    'user_id' => $userCompany['id'],
+                    'count_student_default' => $item['count_student_default']
+                ]);
+            } else {
+                //nếu có công ty đăng kí rồi thì cập nhâp số lượng sinh viên mặc định
+                $company = $userCompany->company;
+                $company->count_student_default = $item['count_student_default'];
+                $company->save();
+            }
+
+            //cho công ty tham gia
+            if (CompanyInternShipCourse::checkCompanyInternShipCourse($userCompany->company->id, $param['courseId'])) {
+//                CompanyInternShipCourse::insertCompanyInternShipCourse($userCompany->company->id, $param['courseId'],
+//                    $userCompany->company->count_student_default);
+                CompanyInternShipCourse::create([
+                    'company_id' => $userCompany->company->id,
+                    'internship_course_id' => $param['courseId'],
+                    'student_quantity' => $userCompany->company->count_student_default,
+                    'hr_name' => $item['hr_name']
+                ]);
+            }
+
+            //kiểm tra tồn tại
+            $lectureAssignCompany = LectureAssignCompany::where([
+                'lecture_id' => $userLecture->lecture->id,
+                'company_id' => $userCompany->company->id,
+                'internship_course_id' => $param['courseId']
+            ])->first();
+
+            //nếu chưa tồn tại thì thêm phân công
+            if (!$lectureAssignCompany) {
+                LectureAssignCompany::create([
+                    'lecture_id' => $userLecture->lecture->id,
+                    'company_id' => $userCompany->company->id,
+                    'internship_course_id' => $param['courseId'],
+//                    'price' => $item['price']
+                ]);
+            } else {
+                $lectureAssignCompany->price = $item['price'];
+                $lectureAssignCompany->save();
             }
         }
 

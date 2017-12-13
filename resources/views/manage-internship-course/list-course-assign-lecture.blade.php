@@ -35,8 +35,10 @@
                 <thead>
                 <tr>
                     <th style="min-width: 23px">STT</th>
-                    <th style="min-width: 146px">Giảng viên</th>
                     <th style="min-width: 163px">Công ty</th>
+                    <th style="min-width: 146px">Giảng viên</th>
+                    <th style="min-width: 163px">Kỳ thực tập</th>
+                    <th>Giá</th>
                     <th style="min-width: 143px">Chỉnh sửa</th>
                 </tr>
                 </thead>
@@ -49,12 +51,14 @@
                             <td>{{++$i}}</td>
                             <td>{{$item->company->name}}</td>
                             <td>{{$item->lecture->name}}</td>
+                            <td>{{$item->internshipCourse->name}}</td>
+                            <td>{{$item->price}}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="javascript:void(0)" data-lecture-assign-company-id="{{ $item->id }}"
-                                        class="btn btn-success btn-sm error-edit-time btnEditAssignLecture">
-                                        <span class="glyphicon glyphicon-edit"></span>
-                                    </a>
+                                    {{--<a href="javascript:void(0)" data-lecture-assign-company-id="{{ $item->id }}"--}}
+                                        {{--class="btn btn-success btn-sm error-edit-time btnEditAssignLecture">--}}
+                                        {{--<span class="glyphicon glyphicon-edit"></span>--}}
+                                    {{--</a>--}}
                                     <a href="javascript:void(0)" data-lecture-assign-company-id="{{ $item->id }}"
                                        class="btn btn-danger btn-sm btnDeleteAssignLecture">
                                         <span class="glyphicon glyphicon-remove-sign"></span>
@@ -79,11 +83,21 @@
                 <div class="modal-body">
                     <form action="{{ route('admin.assignLectureController.assignLectureToCompany') }}" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <span style="font-size: 16px">Chọn file phân công giảng viên: </span>
-                        <span><input type="file" name="file" id="importFile"
-                                     style="display: inline" required="required"
-                                     accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></span>
-                        <br>
+                        <div class="form-group">
+                            <label for="mssv">Chọn kỳ</label>
+                            <select class="form-control" name="courseId" required>
+                                <option value="">Chọn khóa học</option>
+                                @foreach ($listCourse as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size: 16px">Chọn file phân công giảng viên: </label>
+                            <input type="file" name="file" id="importFile"
+                                         style="display: inline" required="required"
+                                         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+                        </div>
                         <div style="text-align: center;margin-top: 15px">
                             <button type="submit" class="btn btn-primary">Import</button>
                         </div>

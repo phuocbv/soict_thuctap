@@ -13,6 +13,7 @@
             <?php
             $studentReport = \App\StudentReport::getStudentReport($sic->id);
             ?>
+            <!-- modal báo cáo của sinh viên -->
             @if(count($studentReport)>0)
                 {{--modal xem bao cao cua sinh vien--}}
                 <div class="modal fade" id="{{$sic->id}}{{"view-student-report"}}" tabindex="-1" role="dialog"
@@ -126,7 +127,7 @@
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                             </div>
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;margin-top: 30px;font-weight: bold">
+                                                 style="text-align: center;font-weight: bold;margin-bottom: 150px">
                                                 SINH VIÊN
                                                 <br>
                                                 @foreach($student as $s)
@@ -134,32 +135,29 @@
                                                 @endforeach
                                             </div>
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;margin-top: 50px;font-weight: bold">
+                                                 style="text-align: center;margin-top: 50px;font-weight: bold;margin-bottom: 200px">
                                                 XÁC NHẬN NƠI THỰC TẬP
                                             </div>
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;margin-top: 50px;font-weight: bold">
+                                                 style="text-align: center;margin-top: 50px;font-weight: bold;margin-bottom: 200px">
                                                 XÁC NHẬN CỦA VIỆN
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                         style="text-align: center;margin-top: 20px">
-                                        <hr>
-                                        <form action="" method="POST" class="form-inline" role="form">
-                                            <button type="button" class="btn btn-primary print-student-report"
-                                                    data-id="{{$sic->id}}">In báo cáo
-                                            </button>
-                                        </form>
-                                    </div>
-                                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                                    <button type="button" class="btn btn-primary print-student-report"
+                                            data-id="{{$sic->id}}">In báo cáo
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div> {{--ket thuc xem bao cao cua sinh vien--}}
             @endif
+
             {{--modal xem nhan xet cua cong ty--}}
             @if(count($companyAssess)>0)
                 <div class="modal fade" id="{{$sic->id}}{{"view-company-assess"}}" tabindex="-1" role="dialog"
@@ -182,7 +180,7 @@
                                     <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
                                         <div class="row">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                                 style="font-weight: bold;text-align: center">
+                                                 style="font-weight: bold;text-align: center; margin: 40px 0px">
                                                 BẢNG ĐÁNH GIÁ KẾT QUẢ THỰC TẬP DOANH NGHIỆP
                                             </div>
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -601,13 +599,13 @@
                                     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                         style="text-align: center;margin-top: 20px">
-                                        <button type="button" class="btn btn-primary print-as"
-                                                name="print-assess" data-id="{{$sic->id}}">In nhận xét
-                                        </button>
-                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+                                     style="text-align: center;margin-top: 20px">
+                                    <button type="button" class="btn btn-primary print-as"
+                                            name="print-assess" data-id="{{$sic->id}}">In nhận xét
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -618,50 +616,58 @@
     @endforeach
 @endforeach
 <script>
-    $('.print-student-report').click(function () {
-        var sicID = $(this).attr('data-id');
-        var w = window.open('', 'printwindow');
-        w.document.open();
-        w.document.onreadystatechange = function () {
-            if (this.readyState === 'complete') {
-                this.onreadystatechange = function () {
-                };
-                w.focus();
-                w.print();
-                w.close();
+    var studentResult = $('#studentResult');
+
+    $(function () {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             }
-        };
-        w.document.write('<!DOCTYPE html>');
-        w.document.write('<html><head>');
-        w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-        w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-        w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
-        w.document.write('</head><body>');
-        w.document.write($("#" + sicID + "printStudentReport").html());
-        w.document.write('</body></html>');
-        w.document.close();
+        });
+
+        studentResult.on('click', '.print-as', function (e) {
+            e.preventDefault();
+            var current = $(this);
+            printAssess(current);
+        });
+
+        studentResult.on('click', '.print-student-report', function (e) {
+            e.preventDefault();
+            var current = $(this);
+            printStudentReport(current);
+        });
     });
-    $('.print-as').click(function () {
-        var sicID = $(this).attr('data-id');
-        var w = window.open('', 'printwindow');
-        w.document.open();
-        w.document.onreadystatechange = function () {
-            if (this.readyState === 'complete') {
-                this.onreadystatechange = function () {
-                };
-                w.focus();
-                w.print();
-                w.close();
-            }
+    
+    function printAssess(element) {
+        var modalPrintAs = element.parents('div.modal-content').find('.modal-body');
+        var param = {
+            content: modalPrintAs.html(),
+            name: 'assessStudent'
         };
-        w.document.write('<!DOCTYPE html>');
-        w.document.write('<html><head>');
-        w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-        w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-        w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
-        w.document.write('</head><body>');
-        w.document.write($("#" + sicID + "printAs").html());
-        w.document.write('</body></html>');
-        w.document.close();
-    });
+        requestPrint(param);
+    }
+    
+    function printStudentReport(element) {
+        var modalReport = element.parents('div.modal-content').find('.modal-body');
+        var param = {
+            content: modalReport.html(),
+            name: 'studentReport'
+        };
+        requestPrint(param);
+    }
+
+    function requestPrint(param) {
+        var ajax = $.ajax({
+            url: '{{ route('setDataPrint') }}',
+            type: 'POST',
+            data: param
+        });
+        ajax.done(function (data) {
+            console.log(data);
+            window.location = '{{ route('printReport') }}';
+        });
+        ajax.fail(function () {
+            console.log("error");
+        });
+    }
 </script>

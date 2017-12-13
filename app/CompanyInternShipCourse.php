@@ -8,6 +8,8 @@ class CompanyInternShipCourse extends Model
 {
     public $table = 'company_internship_course';
 
+    protected $fillable = ['company_id', 'internship_course_id', 'student_quantity', 'hr_name'];
+
     public function company()
     {
         return $this->belongsTo('App\Company', 'company_id');

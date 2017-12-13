@@ -171,6 +171,7 @@
                                 <thead>
                                 <tr>
                                     <th style="min-width: 82px">Tên công ty</th>
+                                    <th style="min-width: 240px">Số lượng sinh viên</th>
                                     <th style="min-width: 240px">Địa chỉ</th>
                                     <th style="min-width: 104px">Ngày thành lập</th>
                                     <th style="min-width: 150px">Mail hỗ trợ</th>
@@ -180,6 +181,7 @@
                                 <tfoot>
                                 <tr>
                                     <th style="min-width: 82px">Tên công ty</th>
+                                    <th style="min-width: 240px">Số lượng sinh viên</th>
                                     <th style="min-width: 240px">Địa chỉ</th>
                                     <th style="min-width: 104px">Ngày thành lập</th>
                                     <th style="min-width: 150px">Mail hỗ trợ</th>
@@ -188,8 +190,12 @@
                                 </tfoot>
                                 <tbody>
                                 @foreach($arrCompany as $ac)
+                                    @php
+                                        $companyInternshipCourse = \App\CompanyInternShipCourse::getComInCourse($ac->id, $course->first()->id)->first();
+                                    @endphp
                                     <tr>
                                         <td>{{$ac->name}}</td>
+                                        <td>{{$companyInternshipCourse->student_quantity}}</td>
                                         <td>{{$ac->address}}</td>
                                         <td>
                                             @if(date('Y',strtotime($ac->birthday))!=1970 &&date('Y',strtotime($ac->birthday))!=-0001)
@@ -206,7 +212,16 @@
                     </div>
 
                     <div role="tabpanel" class="tab-pane" id="assign">
-                        @if (strtotime($nowDate) >= strtotime($course->first()->start_register)
+                        @if($course->first()->start_register == null || $course->first()->finish_register == null)
+                            <div class="">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Không phải thời điểm phân công')">
+                                    <span>Thêm phân công</span>
+                                </a>
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Không phải thời điểm phân công')">
+                                    <span>Import file excel</span>
+                                </a>
+                            </div>
+                        @elseif (strtotime($nowDate) >= strtotime($course->first()->start_register)
                                 && strtotime($nowDate) <= strtotime($course->first()->finish_register))
                             <div class="">
                                 <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="alert('Đang ở thời gian đang kí, không được phân công')">
@@ -225,6 +240,15 @@
                                 <a href="javascript:void(0)" id="btnImportExcel" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#importExcel">
                                     <span>Import file excel</span>
                                 </a>
+                                <a href="javascript:void(0)" id="btnExportExcel" class="btn btn-primary btn-sm"
+                                   data-internship-course-id="{{ $course->first()->id }}">
+                                    <span>Export file excel</span>
+                                </a>
+                                <form action="{{ route('admin.excelController.exportAssignToExcel') }}" method="post" id="formExportExcel">
+                                    <input type="hidden" value="{{ $course->first()->id }}" name="courseId">
+                                    <input type="hidden" value="{{ csrf_token()  }}" name="_token">
+                                </form>
+
                             </div>
                         @else
                             <div class="">
@@ -401,11 +425,11 @@
                                                         @if (strtotime($nowDate) > strtotime($course->first()->finish_register)
                                                            && strtotime($nowDate) <= strtotime($course->first()->to_date))
                                                             <div class="btn-group">
-                                                                {{--<a href="javascript:void(0)"--}}
-                                                                {{--class="btn btn-success btn-sm error-edit-time btnEditAssign"--}}
-                                                                {{--data-internship-group-id="{{ $asub->id }}">--}}
-                                                                {{--<span class="glyphicon glyphicon-edit"></span>--}}
-                                                                {{--</a>--}}
+                                                                <a href="javascript:void(0)"
+                                                                    class="btn btn-success btn-sm error-edit-time btnEditAssign"
+                                                                    data-internship-group-id="{{ $asub->id }}" >
+                                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                                </a>
                                                                 <a href="javascript:void(0)"
                                                                    class="btn btn-danger btn-sm btnDeleteAssign"
                                                                    data-internship-group-id="{{ $asub->id }}">
@@ -493,7 +517,7 @@
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h3 class="panel-title name-page-profile align-assign">Danh sách sinh viên không được
-                                    tham gia (do chưa đăng ký học tập)</h3>
+                                    tham gia (do chưa đăng ký học tập hoặc không có trong danh sách phân công)</h3>
                             </div>
                             <div class="table-responsive student-assign">
                                 <table id="student-danger-assign" class="table table-bordered">
@@ -672,16 +696,20 @@
                                 </table>
                             </div>
                         </div>
+                        <div>
                         @include('manage-internship-course.tab-lecture-assess')
-                        @include('manage-internship-course.tab-timekeeping')
+                        </div>
+                        <div id="tabTimekeeping">
+                            @include('manage-internship-course.tab-timekeeping')
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    @include('manage-internship-course.modal-student-result')
-
+    <div id="studentResult">
+        @include('manage-internship-course.modal-student-result')
+    </div>
     @foreach($arrStudentQue as $asq)
         <?php
         $student = \App\Student::getStudentFMSV($asq->msv);
@@ -780,7 +808,8 @@
                         doanh nghiệp, {{count($lectureInCourse)}}
                         giảng viên tham gia</span>
 
-                    <form action="assign-form" method="POST" role="form" name="{{$c->id}}{{"assign"}}" enctype="multipart/form-data">
+                    {{--<form action="assign-form" method="POST" role="form" name="{{$c->id}}{{"assign"}}" enctype="multipart/form-data">--}}
+                    <form action="{{ route('admin.assignController.assignFinish') }}" method="POST" role="form" name="{{$c->id}}{{"assign"}}" enctype="multipart/form-data">
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="courseID" id="courseID" value="{{encrypt($c->id)}}">
                         <div class="form-group">
@@ -799,12 +828,44 @@
         </div>
     </div>
 
-
+    <div class="modal fade" id="changeAssign" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align: center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" style="font-weight: bold">Phân công thực tập cho chỉnh sửa phân công</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.assignController.assignStudentAgain') }}" method="POST">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="internshipGroup" id="internshipGroupChange">
+                        <input type="hidden" name="courseID" id="courseID" value="{{encrypt($c->id)}}">
+                        <div class="form-group">
+                            <label for="mssv">Tên sinh viên</label>
+                            <input type="text" class="form-control" placeholder="Khóa" name="mssv" required readonly id="inputNameStudent">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyId">Chọn công ty</label>
+                            <select name="companyId" class="form-control" required id="selectCompany">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Phân công lại</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <script>
         var btnDeleteAssign = $('.btnDeleteAssign');
         var btnEditAssign = $('.btnEditAssign');
+
+        var btnPrintAs = $('btn.btn-primary.print-as');
+        var btnExportExcel = $('#btnExportExcel');
 
         $(function () {
             $('#list-course').addClass('menu-menu');
@@ -922,9 +983,9 @@
                 };
                 w.document.write('<!DOCTYPE html>');
                 w.document.write('<html><head>');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="publlic/bootstrap/css/bootstrap-theme.css">');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
                 w.document.write('</head><body>');
                 var count = 0;
                 for (var i = 0; i < arrPrint.length; i++) {
@@ -968,9 +1029,12 @@
                 };
                 w.document.write('<!DOCTYPE html>');
                 w.document.write('<html><head>');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
+//                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
+                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="/bootstrap/css/bootstrap-theme.css">');
+                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="/bootstrap/css/bootstrap.min.css" >');
+                w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css" >');
                 w.document.write('</head><body>');
                 for (var i = 0; i < arrPrint.length; i++) {
                     if ($("#" + arrPrint[i] + "printAs").length > 0) {
@@ -982,6 +1046,8 @@
                 w.document.close();
             });
 
+            btnPrintAs.on('click', printAs);
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -989,7 +1055,17 @@
             });
 
             btnDeleteAssign.on('click', deleteAssign);
-            btnEditAssign.on('click', showFormEditAssign);
+            btnEditAssign.on('click', function() {
+                var current = $(this);
+                showFormEditAssign(current);
+            });
+
+            btnExportExcel.on('click', function () {
+                //var courseId = $(this).data('internship-course-id');
+                //exportFileExcel(courseId);
+                var formExportExcel = $('#formExportExcel');
+                formExportExcel.submit();
+            });
 
             function deleteAssign() {
                 var btnDelete = $(this);
@@ -1006,7 +1082,7 @@
                     ajax.done(function (data) {
                         var result = JSON.parse(data);
                         if (result.status === 'success') {
-                            alert('Xóa thành công');
+                           // alert('Xóa thành công');
                             window.location.reload();
 //                            var r = studentAssign.row(btnDelete.parents('tr')).data();
 //                            console.log(r);
@@ -1023,9 +1099,60 @@
                 }
             }
 
-            function showFormEditAssign() {
-                
+            function showFormEditAssign(element) {
+                var changeAssign = $('#changeAssign');
+                var selectCompany = $('#selectCompany');
+                var inputNameStudent = $('#inputNameStudent');
+                var internshipGroupChange = $('#internshipGroupChange');
+
+                var internshipGroupId = element.data('internship-group-id');
+                var param = {
+                    internship_group_id: internshipGroupId
+                };
+                var ajax = $.ajax({
+                    url: '{{ route('admin.assignController.showModalAssignStudentAgain') }}',
+                    type: 'GET',
+                    data: param
+                });
+                ajax.done(function (data) {
+                    var result = JSON.parse(data);
+                    if (result.status === 'success') {
+                        console.log(result);
+                        var htmlListCompany = result.data.htmlListCompany;
+                        selectCompany.html(htmlListCompany);
+                        inputNameStudent.val(result.data.student.msv + ' - ' + result.data.student.name);
+                        internshipGroupChange.val(result.data.internshipGroup.id);
+                        changeAssign.modal();
+                    }
+                    if (result.status === 'error') {
+                        alert(result.messages);
+                    }
+                });
+            }
+
+            function exportFileExcel(courseId) {
+                var param = {
+                    courseId: courseId
+                };
+                var ajax = $.ajax({
+                    url: '{{ route('admin.excelController.exportAssignToExcel') }}',
+                    type: 'POST',
+                    data: param
+                });
+//                ajax.done(function (data) {
+//                    var result = JSON.parse(data);
+//                    if (result.status === 'success') {
+//                        console.log(result);
+//                    }
+//                    if (result.status === 'error') {
+//                        alert(result.messages);
+//                    }
+//                });
             }
         });
+
+        function printAs() {
+            alert("dasd");
+        }
     </script>
 @endsection
