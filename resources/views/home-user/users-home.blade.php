@@ -69,7 +69,7 @@
                     @endif
                 @else
                     <span>
-                        <a href="detail-notify?notifyId={{ $n->id }}}"
+                        <a href="showNotify?idNotify={{ $n->id }}"
                                 style="color:#333333;font-weight: bold">
                             {{ $n->title }}
                         </a>

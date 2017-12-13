@@ -18,7 +18,7 @@ class Controller extends BaseController
         return json_encode([
             'status' => $array['status'],
             'data' => $array['data'],
-            'messages' => $array['messages'],
+            'messages' => $array['messages']
         ]);
     }
 

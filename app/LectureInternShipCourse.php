@@ -8,6 +8,8 @@ class LectureInternShipCourse extends Model
 {
     public $table = 'lecture_internship_course';
 
+    protected $fillable = ['lecture_id', 'internship_course_id'];
+
     public function internshipCourse()
     {
         return $this->belongsTo(InternShipCourse::class, 'internship_course_id');

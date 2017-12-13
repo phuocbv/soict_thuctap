@@ -83,49 +83,6 @@
                                readonly="readonly">
                     </div>
                 </div>
-                <div class="row margin-row">
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        <label>Chọn giáo viên</label>
-                    </div>
-                    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                        <label style="color:#c0392b" id="notLecture">chưa chọn giáo viên</label>
-
-                        <div class="panel panel-default">
-                            <div class="table-responsive" style="height: 200px;overflow-y: auto">
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 2%">#</th>
-                                        <th style="width: 25%">Tên</th>
-                                        <th style="width: 30%">Bộ môn</th>
-                                        <th style="width: 25%">Mail liên lạc</th>
-                                        <th style="width: 18%">Điện thoại</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($lecture as $l)
-                                        <?php
-                                        $myUser = \App\MyUser::where('id', '=', $l->user_id)->get();
-                                        ?>
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" name="choseLecture[]" id="" value="{{$l->id}}"
-                                                       class="lecture">
-                                            </td>
-                                            <td>{{$l->name}}</td>
-                                            <td>{{$l->address}}</td>
-                                            @foreach($myUser as $mu)
-                                                <td>{{$mu->email}}</td>
-                                            @endforeach
-                                            <td>{{$l->phone}}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <button type="submit" class="btn btn-primary">Lưu lại</button>
             </form>
         </div>
@@ -198,19 +155,19 @@
         function validateForm() {
             var errorDate = parseInt($('#errorDate').val());
             var choseLecture = new Array();
-            $('.lecture').each(function () {
-                if (this.checked) {
-                    choseLecture.push($(this).val());
-                }
-            });
-            if (choseLecture.length > 0 && errorDate == 0) {
-                return true;
-            } else {
-                if (choseLecture == 0) {
-                    $('#notLecture').show();
-                }
-                return false;
-            }
+//            $('.lecture').each(function () {
+//                if (this.checked) {
+//                    choseLecture.push($(this).val());
+//                }
+//            });
+//            if (choseLecture.length > 0 && errorDate == 0) {
+//                return true;
+//            } else {
+//                if (choseLecture == 0) {
+//                    $('#notLecture').show();
+//                }
+//                return false;
+//            }
 
         }
     </script>

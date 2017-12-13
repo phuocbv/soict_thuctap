@@ -26,9 +26,9 @@ class ReportController extends Controller
             StudentReport::editReport($studentReportID, $request->input('work'), $request->input('result'),
                 $request->input('advantage'), $request->input('disAdvantage'),
                 $request->input('school'), date('Y-m-d H:i:s', strtotime(date('Y-m-d'))));
-            return redirect()->back()->with('editReportSuccess', 'sửa báo cáo thành công');
+            return redirect()->back()->with('editReportSuccess', 'Sửa báo cáo thành công');
         } else {
-            return redirect()->back()->with('editError', 'đã xảy ra lỗi');
+            return redirect()->back()->with('editError', 'Đã xảy ra lỗi');
         }
     }
 
@@ -36,7 +36,7 @@ class ReportController extends Controller
     {
         LectureReport::insert($request->input('advantage'), $request->input('disAdvantage'), $request->input('proposal'),
             $request->input('assessGeneral'), decrypt($request->input('lectureInCourseID')), date('Y-m-d H:i:s', strtotime(date('Y-m-d'))));
-        return redirect()->back()->with('writeReportSuccess', 'Vi?t báo cáo thành công');
+        return redirect()->back()->with('writeReportSuccess', 'Viết báo cáo thành công');
     }
 
     public function lectureEditReport(Request $request)
@@ -45,9 +45,9 @@ class ReportController extends Controller
         if (LectureReport::check($lectureReportID)) {
             LectureReport::edit($lectureReportID, $request->input('advantage'), $request->input('disAdvantage'),
                 $request->input('proposal'), $request->input('assessGeneral'), date('Y-m-d H:i:s', strtotime(date('Y-m-d'))));
-            return redirect()->back()->with('editReportSuccess', 'sửa báo cáo thành công');
+            return redirect()->back()->with('editReportSuccess', 'Sửa báo cáo thành công');
         } else {
-            return redirect()->back()->with('editError', 'đã xảy ra lỗi');
+            return redirect()->back()->with('editError', 'Đã xảy ra lỗi');
         }
     }
 }

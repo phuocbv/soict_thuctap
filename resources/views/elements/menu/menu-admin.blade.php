@@ -42,6 +42,11 @@
                 <a href="plan-learning" id="plan-learning">Kế hoạch học tập</a>
             </li>
         </ul>
+        <ul class="nav navbar-stacked user-menu">
+            <li>
+                <a href="{{ route('admin.assignLectureController.showListInternship') }}" id="list-internship">Phân công giáo viên</a>
+            </li>
+        </ul>
     </div>
 </div>
 <div class="panel panel-default" style="margin-left: -15px;">

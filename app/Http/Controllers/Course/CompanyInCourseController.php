@@ -19,7 +19,7 @@ class CompanyInCourseController extends Controller
 {
     public function companyRegister()
     {
-        $company = $this->currentUser();
+        $company = $this->currentUser()->company;
         $type = 'company';
         $companyID = $company->id;
 

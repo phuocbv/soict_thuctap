@@ -73,7 +73,7 @@
                                                                 <td>{{$as->name}}</td>
                                                                 @for($j=1;$j<=29;$j++)
                                                                     <td>{{$j}}
-                                                                        <input type="checkbox" checked="checked"
+                                                                        <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
@@ -85,7 +85,7 @@
                                                                 <td>{{$as->name}}</td>
                                                                 @for($j=1;$j<=28;$j++)
                                                                     <td>{{$j}}
-                                                                        <input type="checkbox" checked="checked"
+                                                                        <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*{{$ag->internship_course_id}}*{{$ag->company_id}}">
@@ -99,7 +99,7 @@
                                                             <td>{{$as->name}}</td>
                                                             @for($j=1;$j<=31;$j++)
                                                                 <td>{{$j}}
-                                                                    <input type="checkbox" checked="checked"
+                                                                    <input type="checkbox"
                                                                            name="workDay[]"
                                                                            class="check-timekeeping"
                                                                            value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*
@@ -113,7 +113,7 @@
                                                             <td>{{$as->name}}</td>
                                                             @for($j=1;$j<=30;$j++)
                                                                 <td>{{$j}}
-                                                                    <input type="checkbox" checked="checked"
+                                                                    <input type="checkbox"
                                                                            name="workDay[]"
                                                                            class="check-timekeeping"
                                                                            value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*
@@ -178,20 +178,20 @@
                                                                 </td>
                                                             @endfor
                                                         </tr>
-                                                        @if($i==4||$i==6||$i==9||$i==11)
-                                                            <tr>
-                                                                <td>{{$as->name}}</td>
-                                                                @for($j=1;$j<=30;$j++)
-                                                                    <td>{{$j}}
-                                                                        <input type="checkbox" checked="checked"
-                                                                               name="workDay[]"
-                                                                               class="check-timekeeping"
-                                                                               value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*
+                                                    @endif
+                                                    @if($i==4||$i==6||$i==9||$i==11)
+                                                        <tr>
+                                                            <td>{{$as->name}}</td>
+                                                            @for($j=1;$j<=30;$j++)
+                                                                <td>{{$j}}
+                                                                    <input type="checkbox" checked="checked"
+                                                                           name="workDay[]"
+                                                                           class="check-timekeeping"
+                                                                           value="{{$yearFromDate."-".$i."-".$j}}*{{$as->id}}*
                                                                    {{$ag->internship_course_id}}*{{$ag->company_id}}">
-                                                                    </td>
-                                                                @endfor
-                                                            </tr>
-                                                        @endif
+                                                                </td>
+                                                            @endfor
+                                                        </tr>
                                                     @endif
                                                 @endforeach
                                             @endforeach
@@ -207,12 +207,12 @@
                                                 ?>
                                                 @foreach($arrStudent as $as)
                                                     @if($i==2)
-                                                        @if(($yearToDate % 100 != 0) && ($$yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
+                                                        @if(($yearToDate % 100 != 0) && ($yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
                                                             <tr>
                                                                 <td>{{$as->name}}</td>
                                                                 @for($j=1;$j<=29;$j++)
                                                                     <td>{{$j}}
-                                                                        <input type="checkbox" checked="checked"
+                                                                        <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*
@@ -225,7 +225,7 @@
                                                                 <td>{{$as->name}}</td>
                                                                 @for($j=1;$j<=28;$j++)
                                                                     <td>{{$j}}
-                                                                        <input type="checkbox" checked="checked"
+                                                                        <input type="checkbox"
                                                                                name="workDay[]"
                                                                                class="check-timekeeping"
                                                                                value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*
@@ -240,7 +240,7 @@
                                                             <td>{{$as->name}}</td>
                                                             @for($j=1;$j<=31;$j++)
                                                                 <td>{{$j}}
-                                                                    <input type="checkbox" checked="checked"
+                                                                    <input type="checkbox"
                                                                            name="workDay[]"
                                                                            class="check-timekeeping"
                                                                            value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*
@@ -248,20 +248,20 @@
                                                                 </td>
                                                             @endfor
                                                         </tr>
-                                                        @if($i==4||$i==6||$i==9||$i==11)
-                                                            <tr>
-                                                                <td>{{$as->name}}</td>
-                                                                @for($j=1;$j<=30;$j++)
-                                                                    <td>{{$j}}
-                                                                        <input type="checkbox" checked="checked"
-                                                                               name="workDay[]"
-                                                                               class="check-timekeeping"
-                                                                               value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*
+                                                    @endif
+                                                    @if($i==4||$i==6||$i==9||$i==11)
+                                                        <tr>
+                                                            <td>{{$as->name}}</td>
+                                                            @for($j=1;$j<=30;$j++)
+                                                                <td>{{$j}}
+                                                                    <input type="checkbox"
+                                                                           name="workDay[]"
+                                                                           class="check-timekeeping"
+                                                                           value="{{$yearToDate."-".$i."-".$j}}*{{$as->id}}*
                                                                    {{$ag->internship_course_id}}*{{$ag->company_id}}">
-                                                                    </td>
-                                                                @endfor
-                                                            </tr>
-                                                        @endif
+                                                                </td>
+                                                            @endfor
+                                                        </tr>
                                                     @endif
                                                 @endforeach
                                             @endforeach

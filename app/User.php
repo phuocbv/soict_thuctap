@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'user_name', 'provider', 'provider_id'
+        'name', 'email', 'password', 'user_name', 'provider', 'provider_id', 'type'
     ];
 
     /**
@@ -53,5 +53,10 @@ class User extends Authenticatable
     {
         return $query->where('email', $data)
             ->orWhere('provider_id', $data);
+    }
+
+    public function scopeGetByInput($query, $data)
+    {
+        return $query->where($data);
     }
 }

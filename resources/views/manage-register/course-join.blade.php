@@ -1261,7 +1261,7 @@
                                                                                         Tháng {{$i}} {{$yearToDate}}</td>
                                                                                 </tr>
                                                                                 @if($i==2)
-                                                                                    @if(($yearToDate % 100 != 0) && ($$yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
+                                                                                    @if(($yearToDate % 100 != 0) && ($yearToDate % 4 == 0) || ($yearToDate % 400 == 0))
                                                                                         <tr>
                                                                                             @for($j=1;$j<=29;$j++)
                                                                                                 <?php

@@ -164,8 +164,8 @@
                                         <span>Phân công</span>
                                     </a>
                                 @else
-                                    @if($timeCurrent>strtotime(date('Y-m-d',strtotime($c->finish_register)))
-                                    &&$timeCurrent<strtotime(date('Y-m-d',strtotime($c->from_date))))
+                                    @if($timeCurrent > strtotime(date('Y-m-d',strtotime($c->finish_register)))
+                                    && $timeCurrent < strtotime(date('Y-m-d',strtotime($c->to_date))))
                                         <a href="#" class="btn btn-primary btn-sm"
                                            data-toggle="modal"
                                            data-target="#{{$c->id}}{{"assign"}}">
@@ -227,8 +227,9 @@
                                         ngày hiện
                                         tại</label>
                                     <input type="date" name="startRegister" class="form-control startRegister{{$c->id}}"
-                                           value="{{date('Y-m-d',strtotime($c->start_register))}}"
+                                           value="{{date('Y-m-d', $c->start_register ? strtotime($c->start_register) : strtotime(date('Y-m-d')))}}"
                                            onchange="startChange({{$c->id}})">
+                                    {{--{{ dd($c->start_register) }}--}}
                                 </div>
                             </div>
                             <br>
@@ -246,7 +247,7 @@
                                         trước ngày bắt đầu thực tập 2 ngày</label>
                                     <input type="date" name="finishRegister"
                                            class="form-control finishRegister{{$c->id}}"
-                                           value="{{date('Y-m-d',strtotime($c->finish_register))}}"
+                                           value="{{date('Y-m-d', $c->finish_register ? strtotime($c->finish_register) : strtotime(date('Y-m-d')))}}"
                                            onchange="finishChange({{$c->id}})">
                                 </div>
                             </div>
@@ -298,49 +299,14 @@
                               onsubmit="return validateFormAssign({{$c->id}})" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="courseID" id="courseID" value="{{encrypt($c->id)}}">
-                            <span style="font-size: 16px">Chọn file sinh viên: </span>
-                            <span><input type="file" name="file" id="file{{$c->id}}"
-                                         style="display: inline" required="required"
-                                         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></span>
-                            <br>
-                            <span style="font-size: 16px">Chọn thêm giáo viên: </span>
-
-                            <div class="panel panel-default">
-                                <div class="table-responsive" style="height: 200px;overflow-y: auto">
-                                    <table class="table table-striped table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Tên</th>
-                                            <th>Bộ môn</th>
-                                            <th>Mail liên lạc</th>
-                                            <th>Điện thoại</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach($lecture as $l)
-                                            <?php
-                                            $myUser = \App\MyUser::where('id', '=', $l->user_id)->get();
-                                            ?>
-                                            <tr>
-                                                <td>
-                                                    <input type="checkbox" name="choseLecture[]" id=""
-                                                           value="{{$l->id}}"
-                                                           class="lecture{{$c->id}}">
-                                                </td>
-                                                <td>{{$l->name}}</td>
-                                                <td>{{$l->address}}</td>
-                                                @foreach($myUser as $mu)
-                                                    <td>{{$mu->email}}</td>
-                                                @endforeach
-                                                <td>{{$l->phone}}</td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="form-group">
+                                <span style="font-size: 16px">Chọn file sinh viên: </span>
+                                <span><input type="file" name="file" id="file{{$c->id}}"
+                                             style="display: inline" required="required"
+                                             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></span>
                             </div>
-                            <div style="text-align: center;margin-top: 15px">
+                            <br>
+                            <div class="form-group">
                                 <button type="submit" class="btn btn-primary">Phân công
                                 </button>
                             </div>

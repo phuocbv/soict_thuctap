@@ -8,6 +8,10 @@ class Lecture extends Model
 {
     public $table = 'lecture';
 
+    protected $fillable = [
+        'name', 'user_id'
+    ];
+
     public function myUser()
     {
         return $this->belongsTo('App\MyUser', 'user_id');

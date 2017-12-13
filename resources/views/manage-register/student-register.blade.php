@@ -363,9 +363,9 @@
                                         @foreach($internShipCourse as $ic)
                                             <input type="hidden" name="courseID" value="{{encrypt($ic->id)}}">
                                         @endforeach
-                                        @foreach($user as $u)
-                                            <input type="hidden" name="studentID" value="{{encrypt($u->id)}}">
-                                        @endforeach
+                                        @if ($user)
+                                            <input type="hidden" name="studentID" value="{{encrypt($user->id)}}">
+                                        @endif
                                         <button type="button" class="btn btn-primary" data-dismiss="modal"
                                                 style="min-width: 70px">Không
                                         </button>

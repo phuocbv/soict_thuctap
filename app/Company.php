@@ -8,6 +8,10 @@ class Company extends Model
 {
     public $table = 'company';
 
+    protected $fillable = [
+        'name', 'user_id', 'count_student_default', 'hr_name', 'hr_mail', 'hr_phone'
+    ];
+
     public function student()
     {
         return $this->belongsTo('App\Student', 'student_id');
@@ -22,6 +26,17 @@ class Company extends Model
     {
         return $this->hasMany('App\CompanyInternShipCourse', 'company_id');
     }
+
+    public function lectureAssignCompany()
+    {
+        return $this->hasMany(LectureAssignCompany::class, 'company_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 
     /**
      * get company

@@ -1,4 +1,6 @@
 <?php
+define('ACCESS_TOKEN_SOCIAL', 'accessTokenSocial');
+define('DATA_PRINT', 'dataPrint');
 
 return [
     //phân quyền người dùng
@@ -13,5 +15,17 @@ return [
     //login social
     'provider' => [
         'facebook' => 'facebook',
-    ]
+    ],
+
+    'groupID' => '756558567743997',
+
+    'email' => '@student.hust.edu.vn',
+    'count_student_default' => 10,
+
+    'status_assign' => [
+        'init' => 0,
+        'start' => 1,
+        'assign' => 2,
+        'finish' => 3
+    ],
 ];

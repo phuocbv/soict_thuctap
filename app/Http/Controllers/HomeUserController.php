@@ -100,6 +100,33 @@ class HomeUserController extends Controller
         ]);
     }
 
+    public function showDetailCompany(Request $request)
+    {
+        $param = $request->only('companyId');
+        $company = Company::find(decrypt($param['companyId']));
+        if (Auth::check()) {
+            $type = Auth::user()->type;
+            $user = null;
+            if ($type == config('settings.role.company')) {
+                $user = Auth::user()->company;
+            } else if ($type == config('settings.role.lecture')) {
+                $user = Auth::user()->lecture;
+            } else {
+                $user = Auth::user()->student;
+            }
+
+            return view('home-user.showInfoCompany')->with([
+                'user' => $user,
+                'company' => $company,
+                'type' => $type
+            ]);
+        }
+
+        return view('showInfoCompany')->with([
+            'company' => $company
+        ]);
+    }
+
     /**
      * return user-home page is company
      *
