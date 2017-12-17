@@ -34,26 +34,35 @@
                                     </div>
                                     <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
                                         <div class="row" id="{{$sic->id}}{{"printStudentReport"}}">
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;font-weight: bold">
-                                                <span>TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI</span><br>
-                                                <span>Viện Công Nghệ Thông Tin và Truyền Thông</span><br>
-                                                <span>––––––––––––</span>
+                                            <div>
+                                                <table width="100%" style="border: hidden">
+                                                    <tbody>
+                                                    <tr style="text-align: center">
+                                                        <td width="50%" style="border: hidden">
+                                                            <div>TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI</div>
+                                                            <div>VIỆN CÔNG NGHỆ THÔNG TIN  VÀ TRUYỀN THÔNG</div>
+                                                            <div>––––––––––––</div>
+                                                        </td>
+                                                        <td width="50%" style="padding-top: 10px; border: hidden">
+                                                            <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                                                            <div>Độc Lập – Tự do – Hạnh phúc</div>
+                                                            <div>––––––––––––––––––––––––––––</div>
+                                                            @foreach($studentReport as $sr)
+                                                                Hà Nội, ngày {{date('d',strtotime($sr->date_report))}}
+                                                                tháng {{date('m',strtotime($sr->date_report))}}
+                                                                năm {{date('Y',strtotime($sr->date_report))}}
+                                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;font-weight: bold">
-                                                <span>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</span><br>
-                                                <span>Độc Lập – Tự do – Hạnh phúc</span><br>
-                                                <span>––––––––––––––––––––––––––––</span><br>
-                                                @foreach($studentReport as $sr)
-                                                    Hà Nội, ngày {{date('d',strtotime($sr->date_report))}}
-                                                    tháng {{date('m',strtotime($sr->date_report))}}
-                                                    năm {{date('Y',strtotime($sr->date_report))}}
-                                                @endforeach
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+                                                 style="text-align: center;margin-top: 20px;margin-bottom: 15px;font-weight: bold; font-size: 24px">
+                                                BÁO CÁO
                                             </div>
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
                                                  style="text-align: center;margin-top: 20px;margin-bottom: 15px;font-weight: bold">
-                                                BÁO CÁO<br>
                                                 KẾT QUẢ THỰC TẬP TẠI ĐƠN VỊ NGOÀI TRƯỜNG
                                             </div>
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -124,23 +133,24 @@
                                                     <span style="font-weight: normal;">{!! nl2br(e(trim($sr->dis_advantage))) !!}</span>
                                                 @endforeach
                                             </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                            </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;font-weight: bold;margin-bottom: 150px">
-                                                SINH VIÊN
-                                                <br>
-                                                @foreach($student as $s)
-                                                    {{$s->name}}
-                                                @endforeach
-                                            </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;margin-top: 50px;font-weight: bold;margin-bottom: 200px">
-                                                XÁC NHẬN NƠI THỰC TẬP
-                                            </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                 style="text-align: center;margin-top: 50px;font-weight: bold;margin-bottom: 200px">
-                                                XÁC NHẬN CỦA VIỆN
+                                            <div>
+                                                <table width="100%" style="border: hidden">
+                                                    <tr style="text-align: center">
+                                                        <td width="50%" style="border: hidden"></td>
+                                                        <td width="50%" style="border: hidden">
+                                                            <div>SINH VIÊN</div>
+                                                            <div>
+                                                                @foreach($student as $s)
+                                                                    {{$s->name}}
+                                                                @endforeach
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="text-align: center;">
+                                                        <td width="50%" style="padding-top: 100px; border: hidden">XÁC NHẬN NƠI THỰC TẬP</td>
+                                                        <td width="50%" style="padding-top: 100px; border: hidden">XÁC NHẬN CỦA SINH VIÊN</td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -584,15 +594,20 @@
                                                 ?>
                                                 {{$sum}} điểm
                                             </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                            </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                <span style="font-weight: bold;">XÁC NHẬN NGƯỜI PHỤ TRÁCH</span><br>
-                                                <br>
-                                                <br>
-                                                @foreach($companyInCourse as $cic)
-                                                    <span>{{$cic->hr_name}}</span>
-                                                @endforeach
+                                            <div>
+                                                <table width="100%" style="border: hidden">
+                                                    <tr>
+                                                        <td width="50%" style="border: hidden"></td>
+                                                        <td width="50%" style="border: hidden; text-align: center">
+                                                            <div>XÁC NHẬN NGƯỜI PHỤ TRÁCH</div>
+                                                            <div>
+                                                                @foreach($companyInCourse as $cic)
+                                                                    <span>{{$cic->hr_name}}</span>
+                                                                @endforeach
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>

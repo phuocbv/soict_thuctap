@@ -38,7 +38,7 @@
                     <th style="min-width: 163px">Công ty</th>
                     <th style="min-width: 146px">Giảng viên</th>
                     <th style="min-width: 163px">Kỳ thực tập</th>
-                    <th>Giá</th>
+                   {{-- <th>Giá</th>--}}
                     <th style="min-width: 143px">Chỉnh sửa</th>
                 </tr>
                 </thead>
@@ -52,17 +52,17 @@
                             <td>{{$item->company->name}}</td>
                             <td>{{$item->lecture->name}}</td>
                             <td>{{$item->internshipCourse->name}}</td>
-                            <td>{{$item->price}}</td>
+                            {{--<td>{{$item->price}}</td>--}}
                             <td>
                                 <div class="btn-group">
-                                    {{--<a href="javascript:void(0)" data-lecture-assign-company-id="{{ $item->id }}"--}}
-                                        {{--class="btn btn-success btn-sm error-edit-time btnEditAssignLecture">--}}
-                                        {{--<span class="glyphicon glyphicon-edit"></span>--}}
-                                    {{--</a>--}}
                                     <a href="javascript:void(0)" data-lecture-assign-company-id="{{ $item->id }}"
-                                       class="btn btn-danger btn-sm btnDeleteAssignLecture">
-                                        <span class="glyphicon glyphicon-remove-sign"></span>
+                                        class="btn btn-success btn-sm error-edit-time btnEditAssignLecture">
+                                        <span class="glyphicon glyphicon-edit"></span>
                                     </a>
+                                    {{--<a href="javascript:void(0)" data-lecture-assign-company-id="{{ $item->id }}"--}}
+                                       {{--class="btn btn-danger btn-sm btnDeleteAssignLecture">--}}
+                                        {{--<span class="glyphicon glyphicon-remove-sign"></span>--}}
+                                    {{--</a>--}}
                                 </div>
                             </td>
                         </tr>
@@ -163,26 +163,13 @@
     <div class="modal fade" id="modalAssignLectureEdit" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form method="post" action="{{ route('admin.assignLectureController.assignLecture') }}">
+                <form method="post" action="{{ route('admin.assignLectureController.changeAssignLectureToCompany') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="companyId" id="companyIdEdit">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="myModalLabel">Phân công công ty cho giáo viên</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="companyId">Công ty phân công</label>
-                        </div>
-                        <div class="form-group">
-                            <label for="mssv">Chọn giảng viên</label>
-                            <select class="form-control" name="lectureId" required id="selectLecture">
-                                <option value="">Chọn giảng viên</option>
-                                @foreach ($listLecture as $lecture)
-                                    <option value="{{ $lecture->id }}">{{ $lecture->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
@@ -222,14 +209,30 @@
                 var current = $(this);
                 deleteAssignLecture(current.data('lecture-assign-company-id'), current);
             });
+            $('table#myTable').on('click', 'a.btnEditAssignLecture', function () {
+                var current = $(this);
+                var param = {
+                    lectureAssignCompanyId: current.data('lecture-assign-company-id')
+                };
+                showDialogEditAssign(param);
+            });
             $('table#myTable').on('click', 'a.btnEditAssignLecture', function() {
                 var current = $(this);
                 console.log(current.data('lecture-assign-company-id'));
             });
         });
         
-        function showDialogEditAssign(id) {
-            
+        function showDialogEditAssign(param) {
+            var ajax = $.ajax({
+                url: '{{ route('admin.assignLectureController.showDialogEditAssign') }}',
+                type: 'GET',
+                data: param
+            });
+            ajax.done(function (data) {
+                modalAssignLectureEdit.find('.modal-body').html(data);
+                modalAssignLectureEdit.modal();
+            });
+
         }
 
         function showDialog() {
@@ -239,6 +242,23 @@
         
         function showDialogAssignLecture() {
             modalAssignLecture.modal();
+        }
+        
+        function showModalEditAssignLecture(param) {
+            var ajax = $.ajax({
+                url: '{{ route('admin.assignLectureController.deleteLectureAssignCompany') }}',
+                type: 'POST',
+                data: param
+            });
+            ajax.done(function (data) {
+                var result = JSON.parse(data);
+                if (result.status === 'success') {
+
+                }
+                if (result.status === 'error') {
+                    alert(result.messages);
+                }
+            });
         }
 
         function deleteAssignLecture(id, element) {

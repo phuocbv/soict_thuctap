@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default tab-lecture-access">
     <div class="panel-heading">
         <h3 class="panel-title name-page-profile align-assign">Bảng nhận xét chung của mỗi giảng viên</h3>
     </div>
@@ -81,10 +81,9 @@
                                         aria-label="Close"><span
                                             aria-hidden="true">&times;</span>
                                 </button>
-
-                                <h4 class="modal-title" id="myModalLabel" style="font-weight: bold">Giảng
-                                    viên viết nhận xét
-                                    chung</h4>
+                                <h4 class="modal-title" id="myModalLabel" style="font-weight: bold">
+                                    Giảng viên viết nhận xétchung
+                                </h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row view-assess">
@@ -95,21 +94,32 @@
                                         <div class="row" id="{{$lic->id}}{{'print-assess'}}">
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 style-form"
                                                  style="text-align: center;font-weight: bold">
-                                                <span>TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI</span>
-                                                <span>VIỆN CÔNG NGHỆ THÔNG TIN  VÀ TRUYỀN THÔNG</span><br>
-                                                <span>––––––––––––</span>
+
                                             </div>
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 style-form"
                                                  style="text-align: center;font-weight: bold">
-                                                <span>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</span><br>
-                                                <span>Độc Lập – Tự do – Hạnh phúc</span><br>
-                                                <span>––––––––––––––––––––––––––––</span><br>
-                                                @foreach($lectureReport as $lr)
-                                                    Hà Nội, ngày {{date('d',strtotime($lr->date_report))}}
-                                                    tháng {{date('m',strtotime($lr->date_report))}}
-                                                    năm {{date('Y',strtotime($lr->date_report))}}
-                                                @endforeach
                                             </div>
+                                            <table width="100%" style="border: hidden">
+                                                <tbody>
+                                                    <tr style="text-align: center">
+                                                        <td width="50%" style="border: hidden">
+                                                            <div>TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI</div>
+                                                            <div>VIỆN CÔNG NGHỆ THÔNG TIN  VÀ TRUYỀN THÔNG</div>
+                                                            <div>––––––––––––</div>
+                                                        </td>
+                                                        <td width="50%" style="padding-top: 10px; border: hidden">
+                                                            <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                                                            <div>Độc Lập – Tự do – Hạnh phúc</div>
+                                                            <div>––––––––––––––––––––––––––––</div>
+                                                            @foreach($lectureReport as $lr)
+                                                                Hà Nội, ngày {{date('d',strtotime($lr->date_report))}}
+                                                                tháng {{date('m',strtotime($lr->date_report))}}
+                                                                năm {{date('Y',strtotime($lr->date_report))}}
+                                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 style-form"
                                                  style="text-align: center;margin-top: 20px;margin-bottom: 15px;font-weight: bold">
                                                 BÁO CÁO<br>
@@ -199,15 +209,15 @@
                                                 @endforeach
                                             </div>
                                         </div>
-                                        <hr>
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
                                              style="text-align: center">
-                                            {{--<button type="button" class="btn btn-primary print-assess"--}}
-                                                    {{--data-id="{{$lic->id}}">--}}
-                                                {{--In Nhận xét chung--}}
-                                            {{--</button>--}}
-                                            <a href="{{ route('admin.printCommentOfLecture', ['licId' => $lic->id]) }}"
-                                                class="btn btn-primary">In Nhận xét chung</a>
+                                            <hr>
+                                            <button type="button" class="btn btn-primary print-assess"
+                                                    data-id="{{$lic->id}}">
+                                                In Nhận xét chung
+                                            </button>
+                                            {{--<a href="{{ route('admin.printCommentOfLecture', ['licId' => $lic->id]) }}"--}}
+                                                {{--class="btn btn-primary">In Nhận xét chung</a>--}}
                                         </div>
                                     </div>
                                     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
@@ -228,7 +238,7 @@
             <div class="modal-header" style="text-align: center">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" style="font-weight: bold">Phân công thực tập cho chỉnh sửa phân công</h4>
+                <h4 class="modal-title" style="font-weight: bold">Báo cáo của giảng viên</h4>
             </div>
             <div class="modal-body">
                 <div id="showLectureInCourse"></div>
@@ -238,7 +248,7 @@
 </div>
 
 <script>
-    $('.print-assess').click(function () {
+    /*$('.print-assess').click(function () {
         //var licID = $(this).attr('data-id');
         var licId = $(this).data('id');console.log(licId);
         $.ajaxSetup({
@@ -246,7 +256,7 @@
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             }
         });
-        /*var w = window.open('', 'printwindow');
+        /!*var w = window.open('', 'printwindow');
         w.document.open();
         w.document.onreadystatechange = function () {
             if (this.readyState === 'complete') {
@@ -265,9 +275,9 @@
         w.document.write('</head><body>');
         w.document.write($("#" + licID + "print-assess").html());
         w.document.write('</body></html>');
-        w.document.close();*/
+        w.document.close();*!/
         $.ajax({
-            url: '{{ route('admin.printCommentOfLecture') }}',
+            url: '',
             type: 'GET',
             data: {licId: licId},
         })
@@ -281,7 +291,7 @@
         .always(function() {
             console.log("complete");
         });
-    });
+    });*/
     $('.selectAllLecture').click(function () {
         if (this.checked) {
             $('.selectLecture').each(function () {
@@ -366,6 +376,17 @@
             console.log(param);
             printLectureInCourse(param);
         });
+
+        $('.tab-lecture-access').on('click', '.print-assess', function () {
+            var current = $(this);
+            var body = current.parents('.modal-body').html();
+            var btn = current.parents('.col-xs-12.col-sm-12.col-md-12.col-lg-12').html();
+            var param = {
+                content: body.replace(btn, ''),
+                name: 'lectureInCourse'
+            };
+            printLectureAccess(param);
+        });
     });
 
     function showListLectureManageStudent(lectureInCourseId) {
@@ -392,8 +413,7 @@
             url: '{{ route('setDataPrint') }}',
             type: 'POST',
             data: {
-                content: param,
-                name: 'lectureInCourse'
+                content: param
             }
         });
         ajax.done(function(data) {
@@ -410,6 +430,23 @@
         })
         .always(function() {
             console.log("complete");
+        });
+    }
+    
+    function printLectureAccess(param) {
+        var ajax = $.ajax({
+            url: '{{ route('setDataPrint') }}',
+            type: 'POST',
+            data: param
+        });
+        ajax.done(function(data) {
+            var result = JSON.parse(data);
+            if (result.status === 'success') {
+                window.location.href = '{{ route('printReport') }}';
+            }
+            if (result.status === 'error') {
+                alert(result.messages);
+            }
         });
     }
 </script>

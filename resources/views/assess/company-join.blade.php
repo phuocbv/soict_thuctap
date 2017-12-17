@@ -226,6 +226,7 @@
                                                     <input type="number" name="companyPoint" id=""
                                                            class="form-control companyPoint" min="0" max="10"
                                                            data-id="{{$sic->student_id}}"
+                                                           data-internship-course-id="{{$cc->id}}"
                                                            value="{{$sic->company_point}}"
                                                            style="width: 85px">
                                                 </td>
@@ -310,7 +311,7 @@
             "ordering": false
         });
         $('.companyPoint').change(function () {
-            var courseID = $('.courseCurrentClass').val();
+            var courseID = $(this).data('internship-course-id');
             var studentID = $(this).attr('data-id');
             var getCompanyPoint = $(this).val();
             var companyPoint = parseFloat(getCompanyPoint);

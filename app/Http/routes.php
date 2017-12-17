@@ -252,7 +252,25 @@ Route::group(['middleware' => 'Admin'], function () {
         'as' => 'admin.assignController.assignStudentAgain'
     ]);
 
+    Route::get('showDialogEditAssign', [
+        'uses' => 'Course\AssignLectureController@showDialogEditAssign',
+        'as' => 'admin.assignLectureController.showDialogEditAssign'
+    ]);
 
+    Route::post('changeAssignLectureToCompany', [
+        'uses' => 'Course\AssignLectureController@changeAssignLectureToCompany',
+        'as' => 'admin.assignLectureController.changeAssignLectureToCompany'
+    ]);
+
+    Route::post('showModalAssignListStudent', [
+        'uses' => 'Course\AssignController@showModalAssignListStudent',
+        'as' => 'admin.assignController.showModalAssignListStudent'
+    ]);
+
+    Route::post('assignListStudent', [
+        'uses' => 'Course\AssignController@assignListStudent',
+        'as' => 'admin.assignController.assignListStudent'
+    ]);
 
     //export excel
     Route::post('exportAssignToExcel', [

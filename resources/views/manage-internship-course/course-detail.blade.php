@@ -170,9 +170,10 @@
                             <table id="table-company" class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th style="min-width: 82px">Tên công ty</th>
-                                    <th style="min-width: 240px">Số lượng sinh viên</th>
-                                    <th style="min-width: 240px">Địa chỉ</th>
+                                    <th>Tên công ty</th>
+                                    <th style="min-width: 200px">Mail công ty</th>
+                                    <th style="min-width: 150px">Số lượng sinh viên</th>
+                                    <th>Địa chỉ</th>
                                     <th style="min-width: 104px">Ngày thành lập</th>
                                     <th style="min-width: 150px">Mail hỗ trợ</th>
                                     <th style="min-width: 100px">Điện thoại</th>
@@ -180,9 +181,10 @@
                                 </thead>
                                 <tfoot>
                                 <tr>
-                                    <th style="min-width: 82px">Tên công ty</th>
-                                    <th style="min-width: 240px">Số lượng sinh viên</th>
-                                    <th style="min-width: 240px">Địa chỉ</th>
+                                    <th>Tên công ty</th>
+                                    <th style="min-width: 200px">Mail công ty</th>
+                                    <th style="min-width: 150px">Số lượng sinh viên</th>
+                                    <th>Địa chỉ</th>
                                     <th style="min-width: 104px">Ngày thành lập</th>
                                     <th style="min-width: 150px">Mail hỗ trợ</th>
                                     <th style="min-width: 100px">Điện thoại</th>
@@ -195,6 +197,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{$ac->name}}</td>
+                                        <td>{{ $ac->user->email }}</td>
                                         <td>{{$companyInternshipCourse->student_quantity}}</td>
                                         <td>{{$ac->address}}</td>
                                         <td>
@@ -342,6 +345,7 @@
                                 <table id="student-assign" class="table table-bordered">
                                     <thead>
                                     <tr>
+                                        <th><input type="checkbox" name="selectAll" class="selectAll"></th>
                                         <th>Môn học</th>
                                         <th style="min-width: 79px">Mã sinh viên</th>
                                         <th style="min-width: 97px">Tên sinh viên</th>
@@ -354,6 +358,13 @@
                                     </thead>
                                     <tfoot>
                                     <tr>
+                                        <th>
+                                            <a href="javascript:void(0)"
+                                                class="btn btn-success btn-sm error-edit-time btnSelectAllAssignStudent"
+                                                id="btnSelectAllAssignStudent">
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </a>
+                                        </th>
                                         <th>Môn học</th>
                                         <th style="min-width: 79px">Mã sinh viên</th>
                                         <th style="min-width: 97px">Tên sinh viên</th>
@@ -371,6 +382,7 @@
                                     @foreach($arrAssign as $aa)
                                         <?php
                                         $i++;
+                                        $aa = $aa->sortBy('lecture_id');
                                         ?>
                                         @foreach($aa as $asub)
                                             <?php
@@ -384,6 +396,11 @@
                                             @else
                                                 <tr style="background-color: #ecf0f1">
                                                     @endif
+                                                    <td width="5px">
+                                                        @foreach($studentInCourse as $sic)
+                                                            <input type="checkbox" name="selectAssignStudent[]" class="select selectAssignStudent" value="{{$asub->id}}">
+                                                        @endforeach
+                                                    </td>
                                                     <td>
                                                         @foreach($studentInCourse as $sic)
                                                             {{$sic->subject}}
@@ -617,6 +634,7 @@
                                     @foreach($arrAssign as $aa)
                                         <?php
                                         $i++;
+                                        $aa = $aa->sortBy('lecture_id');
                                         ?>
                                         @foreach($aa as $asub)
                                             <?php
@@ -860,12 +878,33 @@
     </div>
 
 
+    <div class="modal fade" id="showModalAssignListStudent" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('admin.assignController.assignListStudent') }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <div class="modal-header" style="text-align: center">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" style="font-weight: bold">Phân công thực tập lại cho sinh viên</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Phân công lại</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
         var btnDeleteAssign = $('.btnDeleteAssign');
         var btnEditAssign = $('.btnEditAssign');
 
         var btnPrintAs = $('btn.btn-primary.print-as');
         var btnExportExcel = $('#btnExportExcel');
+        var btnSelectAllAssignStudent = $('#btnSelectAllAssignStudent');
+        var modalAssignListStudent = $('#showModalAssignListStudent');
 
         $(function () {
             $('#list-course').addClass('menu-menu');
@@ -1067,6 +1106,16 @@
                 formExportExcel.submit();
             });
 
+            btnSelectAllAssignStudent.on('click', function () {
+                var arr = $('.selectAssignStudent:checked').map(function(){
+                    return this.value;
+                }).get();
+                var param = {
+                    listInternShipGroup: arr
+                };
+                showModalAssignListStudent(param);
+            });
+
             function deleteAssign() {
                 var btnDelete = $(this);
                 var internshipGroupId = btnDelete.data('internship-group-id');
@@ -1148,6 +1197,26 @@
 //                        alert(result.messages);
 //                    }
 //                });
+            }
+            
+            function showModalAssignListStudent(param) {
+                var ajax = $.ajax({
+                    url: '{{ route('admin.assignController.showModalAssignListStudent') }}',
+                    type: 'POST',
+                    data: param
+                });
+                ajax.done(function (data) {
+                    var result = JSON.parse(data);
+                    if (result.status === 'success') {
+                        console.log(result.data.view);
+                        modalAssignListStudent.find('.modal-body').html(result.data.view);
+                        modalAssignListStudent.modal();
+                    }
+                    if (result.status === 'error') {
+                        alert(result.messages);
+                    }
+
+                });
             }
         });
 

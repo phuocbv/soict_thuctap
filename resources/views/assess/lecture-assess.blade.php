@@ -222,6 +222,7 @@
                                                                    max="10" class="lectureToScore form-control"
                                                                    data-id="{{$sic->student_id}}"
                                                                    value="{{$sic->lecture_point}}"
+                                                                   data-internship-course-id="{{ $cc->id }}"
                                                                    style="width: 85px">
                                                         </td>
                                                     @endforeach
@@ -912,23 +913,29 @@
                                                             <div class="col-xs-12 col-sm-10 col-md-10 col-lg-10"
                                                                  id="{{$g->id}}{{"printReport"}}">
                                                                 <div class="row">
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                                         style="text-align: center;font-weight: bold">
-                                                                        <span>TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI</span><br>
-                                                                        <span>VIỆN CÔNG NGHỆ THÔNG TIN  VÀ TRUYỀN THÔNG</span><br>
-                                                                        <span>––––––––––––</span>
-                                                                    </div>
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                                         style="text-align: center;font-weight: bold">
-                                                                        <span>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</span><br>
-                                                                        <span>Độc Lập – Tự do – Hạnh phúc</span><br>
-                                                                        <span>––––––––––––––––––––––––––––</span><br>
-                                                                        @foreach($studentReport as $sr)
-                                                                            Hà Nội,
-                                                                            ngày {{date('d',strtotime($sr->date_report))}}
-                                                                            tháng {{date('m',strtotime($sr->date_report))}}
-                                                                            năm {{date('Y',strtotime($sr->date_report))}}
-                                                                        @endforeach
+                                                                    <div>
+                                                                        <table width="100%", style="border: hidden">
+                                                                            <tr style="text-align: center;">
+                                                                                <td width="50%" style="border: hidden;padding-top: 20px">
+                                                                                    <div>TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI</div>
+                                                                                    <div>VIỆN CÔNG NGHỆ THÔNG TIN  VÀ TRUYỀN THÔNG</div>
+                                                                                    <div>––––––––––––</div>
+                                                                                </td>
+                                                                                <td width="50%" style="border: hidden; padding-top: 20px">
+                                                                                    <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                                                                                    <div>Độc Lập – Tự do – Hạnh phúc</div>
+                                                                                    <div>––––––––––––––––––––––––––––</div>
+                                                                                    <div>
+                                                                                        @foreach($studentReport as $sr)
+                                                                                            Hà Nội,
+                                                                                            ngày {{date('d',strtotime($sr->date_report))}}
+                                                                                            tháng {{date('m',strtotime($sr->date_report))}}
+                                                                                            năm {{date('Y',strtotime($sr->date_report))}}
+                                                                                        @endforeach
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
                                                                     </div>
                                                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
                                                                          style="text-align: center;margin-top: 20px;margin-bottom: 15px;font-weight: bold">
@@ -1005,41 +1012,39 @@
                                                                             </span>
                                                                         @endforeach
                                                                     </div>
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                                    </div>
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                                         style="text-align: center;margin-top: 30px;font-weight: bold">
-                                                                        SINH VIÊN
-                                                                        <br>
-                                                                        @foreach($student as $s)
-                                                                            {{$s->name}}
-                                                                        @endforeach
-                                                                    </div>
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                                         style="text-align: center;margin-top: 50px;font-weight: bold">
-                                                                        XÁC NHẬN NƠI THỰC TẬP
-                                                                    </div>
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                                         style="text-align: center;margin-top: 50px;font-weight: bold">
-                                                                        XÁC NHẬN CỦA VIỆN
+                                                                    <div>
+                                                                        <table width="100%", style="border: hidden">
+                                                                            <tr style="text-align: center">
+                                                                                <td width="50%" style="border: hidden"></td>
+                                                                                <td width="50%" style="border: hidden">
+                                                                                    <div>SINH VIÊN</div>
+                                                                                    <div>
+                                                                                        @foreach($student as $s)
+                                                                                            {{$s->name}}
+                                                                                        @endforeach
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="text-align: center;">
+                                                                                <td width="50%" style="border: hidden;padding-top: 50px">
+                                                                                    <div>XÁC NHẬN NƠI THỰC TẬP</div>
+                                                                                </td>
+                                                                                <td width="50%" style="border: hidden; padding-top: 50px">
+                                                                                    <div>XÁC NHẬN CỦA VIỆN</div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                                                 style="text-align: center;margin-top: 20px">
-                                                                <hr>
-                                                                <form action="" method="POST" class="form-inline"
-                                                                      role="form">
-                                                                    <button type="button"
-                                                                            class="btn btn-primary print-report"
-                                                                            data-id="{{$g->id}}">In báo
-                                                                        cáo
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                                                            </div>
                                                         </div>
+                                                    </div>
+                                                    <div class="modal-footer"
+                                                         style="text-align: center;margin-top: 20px">
+                                                        <button type="button" class="btn btn-primary print-report"
+                                                                data-id="{{$g->id}}">In báo cáo</button>
+                                                    </div>
+                                                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                                                     </div>
                                                 </div>
                                             </div>
@@ -1097,27 +1102,23 @@
                                                             <form action="" method="POST" role="form">
                                                                 <div class="row">
                                                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                                                         style="font-weight: bold;text-align: center">
+                                                                         style="font-weight: bold;text-align: center; margin: 20px 0">
                                                                         BẢNG ĐÁNH GIÁ KẾT QUẢ THỰC TẬP DOANH NGHIỆP
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                                    </div>
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                                        @foreach($companyAssess as $ca)
-                                                                            <span style="float:right;">Ngày {{date('d',strtotime($ca->date_assess))}}
-                                                                                tháng {{date('m',strtotime($ca->date_assess))}}
-                                                                                năm {{date('Y',strtotime($ca->date_assess))}}</span>
-                                                                        @endforeach
-                                                                    </div>
+                                                                <div style="margin: 10px 0; text-align: right; width: 100%; padding-bottom: 20px">
+                                                                    @foreach($companyAssess as $ca)
+                                                                        <span>Ngày {{date('d',strtotime($ca->date_assess))}}
+                                                                            tháng {{date('m',strtotime($ca->date_assess))}}
+                                                                            năm {{date('Y',strtotime($ca->date_assess))}}</span>
+                                                                    @endforeach
                                                                 </div>
                                                                 <div class="row" style="margin-top: 20px">
-                                                <span>Tên sinh viên:
-                                                    @foreach($student as $s)
-                                                        {{$s->name}}
-                                                    @endforeach
-                                                </span><br>
+                                                                    <span>Tên sinh viên:
+                                                                        @foreach($student as $s)
+                                                                            {{$s->name}}
+                                                                        @endforeach
+                                                                    </span><br>
                                                                 </div>
                                                                 <div class="row">
                                                                     @foreach($company as $c)
@@ -1634,23 +1635,26 @@
                                                                     {{$sum}} điểm
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                                    </div>
-                                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                                        <span style="font-weight: bold;float: right">XÁC NHẬN NGƯỜI PHỤ TRÁCH</span><br>
-                                                                        <span style="font-weight: bold;float: right;margin-right:45px">{{$hrName}}</span>
-                                                                    </div>
+                                                                    <table style="width: 100%; border: hidden" >
+                                                                        <tr style="text-align: center">
+                                                                            <td width="50%" style="border: hidden"></td>
+                                                                            <td width="50%" style="border: hidden">
+                                                                                <div style="font-weight: bold;">XÁC NHẬN NGƯỜI PHỤ TRÁCH</div>
+                                                                                <div style="font-weight: bold; margin-right:45px">{{$hrName}}</div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
                                                                 </div>
                                                             </form>
                                                         </div>
                                                         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                                                         </div>
                                                     </div>
-                                                    <div class="row" style="text-align: center">
-                                                        <button type="button" class="btn btn-primary print-assess"
-                                                                name="print-assess" data-id="{{$g->id}}">In nhận xét
-                                                        </button>
-                                                    </div>
+                                                </div>
+                                                <div class="modal-footer" style="text-align: center">
+                                                    <button type="button" class="btn btn-primary print-assess"
+                                                            name="print-assess" data-id="{{$g->id}}">In nhận xét
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -3083,6 +3087,8 @@
                                     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="modal-footer">
                                 <div class="row" style="text-align: center">
                                     <button type="button" class="btn btn-primary print-as"
                                             name="print-assess" data-id="{{$g->id}}">In nhận xét
@@ -3207,23 +3213,27 @@
                                                         </span>
                                                     @endforeach
                                                 </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                     style="text-align: center;margin-top: 30px;font-weight: bold">
-                                                    SINH VIÊN
-                                                    <br>
-                                                    @foreach($student as $s)
-                                                        {{$s->name}}
-                                                    @endforeach
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                     style="text-align: center;margin-top: 50px;font-weight: bold">
-                                                    XÁC NHẬN NƠI THỰC TẬP
-                                                </div>
-                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
-                                                     style="text-align: center;margin-top: 50px;font-weight: bold">
-                                                    XÁC NHẬN CỦA VIỆN
+                                                <div>
+                                                    <table width="100%", style="border: hidden">
+                                                        <tr style="text-align: center">
+                                                            <td width="50%" style="border: hidden"></td>
+                                                            <td width="50%" style="border: hidden">
+                                                                <div>SINH VIÊN</div>
+                                                                <div>
+                                                                    @foreach($student as $s)
+                                                                        {{$s->name}}
+                                                                    @endforeach
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="text-align: center">
+                                                            <td width="50%" style="border: hidden"></td>
+                                                            <td width="50%" style="border: hidden">
+                                                                <div>XÁC NHẬN NƠI THỰC TẬP</div>
+                                                                <div>XÁC NHẬN CỦA VIỆN</div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
@@ -3462,7 +3472,7 @@
          su kien change
          */
         $('.lectureToScore').change(function () {
-            var courseID = $('.courseCurrentClass').val();
+            var courseID = $(this).data('internship-course-id');
             var studentID = $(this).attr('data-id');
             var getLecturePoint = $(this).val();
             var lecturePoint = parseFloat(getLecturePoint);
@@ -3527,50 +3537,30 @@
             $('.lecture-view1').show();
         });
         $('.print-report').click(function () {
-            var groupID = $(this).attr('data-id');
-            var w = window.open('', 'printwindow');
-            w.document.open();
-            w.document.onreadystatechange = function () {
-                if (this.readyState === 'complete') {
-                    this.onreadystatechange = function () {
-                    };
-                    w.focus();
-                    w.print();
-                    w.close();
+            var content = $(this).parents('div.modal-content').children('div.modal-body').html();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
+            });
+            var param = {
+                content: content,
+                name: 'reportResult'
             };
-            w.document.write('<!DOCTYPE html>');
-            w.document.write('<html><head>');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
-            w.document.write('</head><body>');
-            w.document.write($("#" + groupID + "printReport").html());
-            w.document.write('</body></html>');
-            w.document.close();
+            printReport(param);
         });
         $('.print-assess').click(function () {
-            var groupID = $(this).attr('data-id');
-            var w = window.open('', 'printwindow');
-            w.document.open();
-            w.document.onreadystatechange = function () {
-                if (this.readyState === 'complete') {
-                    this.onreadystatechange = function () {
-                    };
-                    w.focus();
-                    w.print();
-                    w.close();
+            var content = $(this).parents('div.modal-content').children('div.modal-body').html();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
+            });
+            var param = {
+                content: content,
+                name: 'lectureAccess'
             };
-            w.document.write('<!DOCTYPE html>');
-            w.document.write('<html><head>');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
-            w.document.write('</head><body>');
-            w.document.write($("#" + groupID + "printAssess").html());
-            w.document.write('</body></html>');
-            w.document.close();
+            printReport(param);
         });
         $('.print-timekeeping').click(function () {
             var groupID = $(this).attr('data-id');
@@ -3687,5 +3677,22 @@
             w.document.write('</body></html>');
             w.document.close();
         });
+
+        function printReport(param) {
+            var ajax = $.ajax({
+                url: '{{ route('setDataPrint') }}',
+                type: 'POST',
+                data: param
+            });
+            ajax.done(function (data) {
+                var result = JSON.parse(data);
+                if (result.status === 'success') {
+                    window.location.href = '{{ route('printReport') }}';
+                }
+                if (result.status === 'error') {
+                    alert(result.messages);
+                }
+            });
+        }
     </script>
 @endsection

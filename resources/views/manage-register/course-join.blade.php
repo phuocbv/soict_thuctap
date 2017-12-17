@@ -1870,7 +1870,7 @@
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                         </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
+                                        {{--<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
                                              style="text-align: center;margin-top: 30px;font-weight: bold">
                                             SINH VIÊN
                                             <br>
@@ -1887,18 +1887,39 @@
                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
                                              style="text-align: center;margin-top: 50px;font-weight: bold">
                                             XÁC NHẬN CỦA VIỆN
+                                        </div>--}}
+                                        <div>
+                                            <table width="100%" style="border: hidden">
+                                                <tbody>
+                                                    <tr style="margin-bottom: 100px; font-weight: bold">
+                                                        <td style="border: hidden"></td>
+                                                        <td style="text-align: center; border: hidden">
+                                                            <div>SINH VIÊN</div>
+                                                            <div>
+                                                                <span style="font-weight: normal">
+                                                                    @foreach($student as $s)
+                                                                        {{ $s->name }}
+                                                                    @endforeach
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="height: 150px; font-weight: bold; text-align: center;">
+                                                        <td style="border: hidden; padding-top: 100px">XÁC NHẬN NƠI THỰC TẬP</td>
+                                                        <td style="border: hidden; padding-top: 100px">XÁC NHẬN CỦA VIỆN</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
                                      style="text-align: center;margin-top: 20px" id="student-view2">
                                     <hr>
-                                    <form action="" method="POST" class="form-inline" role="form">
                                         <button type="button" class="btn btn-primary" id="edit-report">Sửa báo cáo
                                         </button>
                                         <button type="button" class="btn btn-primary" id="print-report">In báo cáo
                                         </button>
-                                    </form>
                                 </div>
                                 <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                                 </div>
@@ -2254,28 +2275,6 @@
             $('#student-view2').show();
             $('#student-edit').hide();
         });
-        $('#print-report').click(function () {
-            var w = window.open('', 'printwindow');
-            w.document.open();
-            w.document.onreadystatechange = function () {
-                if (this.readyState === 'complete') {
-                    this.onreadystatechange = function () {
-                    };
-                    w.focus();
-                    w.print();
-                    w.close();
-                }
-            };
-            w.document.write('<!DOCTYPE html>');
-            w.document.write('<html><head>');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.css">');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap.min.css" >');
-            w.document.write('<link rel="stylesheet" media="screen,print" type="text/css" href="public/bootstrap/css/bootstrap-theme.min.css" >');
-            w.document.write('</head><body>');
-            w.document.write($("#student-view").html());
-            w.document.write('</body></html>');
-            w.document.close();
-        });
         $('.print-assess').click(function () {
             var dataID = $(this).attr('data-id');
             var w = window.open('', 'printwindow');
@@ -2322,5 +2321,43 @@
             w.document.write('</body></html>');
             w.document.close();
         });
+
+        var printReport = $('#print-report');
+        
+        $(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+
+            printReport.on('click', function () {
+                var current = $(this);
+                var data = current.parents('div.row').html();
+                var btn = current.parents('.col-xs-12.col-sm-12.col-md-12.col-lg-12').html();
+                var param = {
+                    content: data.replace(btn, ''),
+                    name: 'reportOfStudent'
+                };
+                funcPrintReport(param);
+            });
+        });
+        
+        function funcPrintReport(param) {
+            var ajax = $.ajax({
+                url: '{{ route('setDataPrint') }}',
+                type: 'POST',
+                data: param
+            });
+            ajax.done(function (data) {
+                var result = JSON.parse(data);
+                if (result.status === 'success') {
+                    window.location.href = '{{ route('printReport') }}';
+                }
+                if (result.status === 'error') {
+                    alert(result.messages);
+                }
+            });
+        }
     </script>
 @endsection

@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AssignController extends Controller
@@ -1297,6 +1298,99 @@ class AssignController extends Controller
         }
         $internshipGroup->company_id = $company->id;
         $internshipGroup->save();
+        return redirect()->back()->with('assignAdditionSuccess', 'Thay đổi thành công');
+    }
+
+    public function showModalAssignListStudent(Request $request)
+    {
+        $param = $request->only('listInternShipGroup');
+
+        $listInternshipGroup = InternShipGroup::whereIn('id', $param['listInternShipGroup'])->get();
+        //lấy danh sách công ty đã tham gia không phải công ty hiện tại
+        if (count($listInternshipGroup) == 0) {
+            return $this->responseJson([
+                'status' => 'error',
+                'data' => [],
+                'messages' => ['không có phân công nào'],
+            ]);
+        }
+
+        $listCompany = CompanyInternShipCourse::where([
+            'internship_course_id' => $listInternshipGroup->first()->internship_course_id
+        ])->get();
+
+        return $this->responseJson([
+            'status' => 'success',
+            'data' => [
+                'view' => view('elements.show-edit-list-assign-student') ->with([
+                    'listCompany' => $listCompany,
+                    'listInternshipGroup' => $listInternshipGroup,
+                    'listInternshipGroupId' => $param['listInternShipGroup']
+                ])->render()
+            ],
+            'messages' => ['không có phân công nào'],
+        ]);
+    }
+
+    public function assignListStudent(Request $request)
+    {
+        $param = $request->only('listInternshipGroupId', 'companyId');
+        //lấy dánh sách phân công
+        $listInternshipGroup = InternShipGroup::whereIn('id', json_decode($param['listInternshipGroupId']))->get();
+        $courseId = $listInternshipGroup->first()->internship_course_id;
+        //tìm công ty
+        $company = Company::find($param['companyId']);
+        //không tồn tại công ty
+        if (!$company) {
+            return redirect()->back()->with('error', 'Không tồn tại công ty');
+        }
+        $listLectureAssignCompany = LectureAssignCompany::where([
+            'internship_course_id' => $courseId,
+            'company_id' => $company->id
+        ])->get();
+        //trong truong hợp công ty có lớn hơn 2 giảng viên phụ trách
+        if (count($listLectureAssignCompany) > 1) {
+            foreach ($listInternshipGroup as $internshipGroup) {
+                $listCount = collect();
+                //đếm số lượng sinh viên mỗi giảng viên phụ trách trong cong ty
+                $listLectureAssignCompany->each(function ($value) use ($listCount, $courseId) {
+                    //dem so sinh vien cua moi giang vien duoc phan
+                    $count = InternShipGroup::where([
+                        'internship_course_id' => $courseId,
+                        'lecture_id' => $value->lecture_id
+                    ])->count();
+                    //luu vao danh sach
+                    $listCount->push([
+                        'count' => $count,
+                        'lectureId' => $value->lecture_id
+                    ]);
+                });
+                //sap xếp theo chiều giảm
+                $listCount = $listCount->sortByDesc('count');
+                //lấy giảng viên có số lượng sinh viên ít nhất
+                $min = $listCount->first()['count'];
+                $lectureId = $listCount->first()['lectureId'];
+                //tim giảng viên được phân công ít nhất thì phân sinh viên cho giảng viên đó
+                //nhung giảng viên đó phải có sinh viên
+                foreach ($listCount as $item) {
+                    if ($item['count'] < $min && $item['count'] >= 1) {
+                        $min = $item['count'];
+                        $lectureId = $item['lectureId'];
+                    }
+                }
+                $internshipGroup->lecture_id = $lectureId;
+                $internshipGroup->company_id = $company->id;
+                $internshipGroup->save();
+            }
+        } else {//trường hợp chỉ có 1 giảng viên phụ trách
+            foreach ($listInternshipGroup as $internshipGroup) {
+                $internshipGroup->lecture_id = $listLectureAssignCompany->first()->lecture_id;
+                $internshipGroup->company_id = $company->id;
+                $internshipGroup->save();
+            }
+
+        }
+
         return redirect()->back()->with('assignAdditionSuccess', 'Thay đổi thành công');
     }
 }

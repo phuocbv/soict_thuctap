@@ -19,7 +19,7 @@ class ExcelController extends Controller
         if (!$course) {
             return;
         }
-        $listInternshipGroup = $course->internShipGroup;
+        $listInternshipGroup = $course->internShipGroup->sortBy('lecture_id');
         $dataExport = collect([]);
         foreach ($listInternshipGroup as $item) {
             $lecture = $item->lecture;

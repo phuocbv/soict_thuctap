@@ -39,9 +39,12 @@ class AssignLectureController extends Controller
         $listCompany = Company::all();
         $listIdCompanyReject = $listAssignLecture->lists('company_id')->unique();
         //lay danh sach cong ty chua duoc phan cong
-        $list = $listCompany->reject(function ($item, $key) use ($listIdCompanyReject){
-            return $listIdCompanyReject->contains($item->id);
-        });
+
+//        $list = $listCompany->reject(function ($item, $key) use ($listIdCompanyReject){
+//            return $listIdCompanyReject->contains($item->id);
+//        });
+        $list = Company::all();
+
         //$list = LectureInternShipCourse::all();
         $listLecture = Lecture::all();
         $listCourse = InternShipCourse::orderBy('course_term', 'DESC')->get();
@@ -371,6 +374,77 @@ class AssignLectureController extends Controller
                 'company' => $company
             ],
             'messages' => 'Xóa phân công thành công'
+        ]);
+    }
+
+    /**
+     * show modal edit assign lecture to company
+     */
+    public function showDialogEditAssign(Request $request)
+    {
+        $param = $request->only('lectureAssignCompanyId');
+        $lectureAssignCompany = LectureAssignCompany::find($param['lectureAssignCompanyId']);
+
+        if (!$lectureAssignCompany) {
+            return $this->responseJson( [
+                'status' => 'error',
+                'data' => null,
+                'messages' => 'không tìm thấy phân công'
+            ]);
+        }
+        $listLecture = Lecture::whereNotIn('id', [$lectureAssignCompany->lecture_id])->get();
+
+        return view('elements.show-edit-assign-lecture')->with([
+            'listLecture' => $listLecture,
+            'lectureAssignCompany' => $lectureAssignCompany
+        ]);
+    }
+
+    public function changeAssignLectureToCompany(Request $request)
+    {
+        $param = $request->only('lectureAssignCompanyId', 'lectureId', 'companyId');
+        $lectureAssignCompany = LectureAssignCompany::find($param['lectureAssignCompanyId']);
+
+        $listGroup = InternShipGroup::where([
+            'internship_course_id' => $lectureAssignCompany->internship_course_id,
+            'lecture_id' => $lectureAssignCompany->lecture_id,
+            'company_id' => $lectureAssignCompany->company_id
+        ])->get();
+
+        //tìm khóa học
+        $course = $lectureAssignCompany->internshipCourse;
+        $status = $course->status;
+        //thay đổi giảng viên trong bảng phân công
+
+
+        //kiểm tra xem giảng viên đã tham gia kỳ thực tập đó chưa
+        $lectureInternshipCourse = LectureInternShipCourse::where([
+            'internship_course_id' => $lectureAssignCompany->internship_course_id,
+            'lecture_id' => $param['lectureId']
+        ])->get();
+
+        //nếu chưa tham gia thì cho giảng viên tham gia
+        if (count($lectureInternshipCourse) == 0) {
+            LectureInternShipCourse::create([
+                'internship_course_id' => $lectureAssignCompany->internship_course_id,
+                'lecture_id' => $param['lectureId']
+            ]);
+        }
+
+        $lectureAssignCompany->lecture_id = $param['lectureId'];
+        $lectureAssignCompany->save();
+
+       // dd([$listGroup, $param, $lectureAssignCompany]);
+
+        //cập nhập giảng viên
+        foreach ($listGroup as $item) {
+            $item->lecture_id = $param['lectureId'];
+            $item->save();
+        }
+
+        return redirect()->back()->with([
+            'flash_message' => 'Đã thay thế giảng viên',
+            'flash_level' => 'success'
         ]);
     }
 }

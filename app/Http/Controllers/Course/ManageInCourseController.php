@@ -615,11 +615,18 @@ class ManageInCourseController extends Controller
         }
     }
 
+    /**
+     * thay thế giảng viên
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function replaceLecture(Request $request)
     {
         $courseID = $request->input('courseID');
         $lectureIDOld = $request->input('lectureID');
         $lectureIDNew = $request->input('lectureIDReplace');
+        //tìm khóa học
         $course = InternShipCourse::getInCourse($courseID);
         $status = "";
         foreach ($course as $c) {
@@ -636,27 +643,38 @@ class ManageInCourseController extends Controller
             $item->save();
         }
 
+        //kiểm tra xem trạng thái đã phân công chưa
         if ($status == "chưa phân công") {
+            //xóa giảng viên đang kí tham gia thực tập tại kỳ học đã chọn
             LectureInternShipCourse::deleteFLectureIDCourseID($lectureIDOld, $courseID);
+            //check tồn tại xem giảng viên đã tham gia kỳ đó chưa
+            //nếu chưa tham gia thì cho tham gia
             if (LectureInternShipCourse::checkLectureInternShipCourse($lectureIDNew, $courseID)) {
                 LectureInternShipCourse::insertLectureInternShipCourse($lectureIDNew, $courseID);
             }
             return redirect()->back()->with('replaceSuccess', 'Đã thay thế giảng viên');
         } else {
+            //trong trường hợp đã phân công thì không thể xóa chỉ được thay thế giảng viên
             $lecInCourseOld = LectureInternShipCourse::getLecInCourse($lectureIDOld, $courseID);
+            //xem trong bảng giảng viên tham gia đã có giảng viên thay thế tham gia chưa
             $lecInCourseNew = LectureInternShipCourse::getLecInCourse($lectureIDNew, $courseID);
             $lectureReport = array();
+            //lấy danh sách báo cáo của giảng viên
             foreach ($lecInCourseOld as $licO) {
                 $lectureReport = LectureReport::get($licO->id);
             }
             if (count($lectureReport) > 0) {
                 if (count($lecInCourseNew) > 0) {
+                    //trong trường hợp giảng viên thay thế đã tham gia khóa học,
+                    //và giảng viên cũ có báo cáo thì chỉ xóa báo cáo và giảng viên cũ ra khỏi khóa học
                     LectureInternShipCourse::deleteFLectureIDCourseID($lectureIDOld, $courseID);
                     foreach ($lectureReport as $lr) {
                         $find = LectureReport::find($lr->id);
                         $find->delete();
                     }
                 } else {
+                    //trong trường hợp nếu giảng viên đó chưa tham gia khóa học,
+                    //thì thay thế báo cáo của giảng viên cũ là giảng viên mới và cho giảng viên vào khóa học
                     LectureInternShipCourse::deleteFLectureIDCourseID($lectureIDOld, $courseID);
                     LectureInternShipCourse::insertLectureInternShipCourse($lectureIDNew, $courseID);
                     $lectureInCourseIDNew = LectureInternShipCourse::getLecInCourse($lectureIDNew, $courseID)->first()->id;
@@ -665,6 +683,7 @@ class ManageInCourseController extends Controller
                     }
                 }
             } else {
+                //trong trường hợp không có báo cáo
                 if (count($lecInCourseNew) > 0) {
                     LectureInternShipCourse::deleteFLectureIDCourseID($lectureIDOld, $courseID);
                 } else {
